@@ -34,6 +34,7 @@
             loadDataToolStripMenuItem = new ToolStripMenuItem();
             calculateViolationsToolStripMenuItem = new ToolStripMenuItem();
             testToolStripMenuItem = new ToolStripMenuItem();
+            typesToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             menuStrip1.SuspendLayout();
             SuspendLayout();
@@ -62,7 +63,7 @@
             // 
             // toolStripMenuItem1
             // 
-            toolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { loadDataToolStripMenuItem, calculateViolationsToolStripMenuItem, testToolStripMenuItem });
+            toolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { loadDataToolStripMenuItem, calculateViolationsToolStripMenuItem, testToolStripMenuItem, typesToolStripMenuItem });
             toolStripMenuItem1.Name = "toolStripMenuItem1";
             toolStripMenuItem1.Size = new Size(60, 24);
             toolStripMenuItem1.Text = "Menu";
@@ -87,6 +88,13 @@
             testToolStripMenuItem.Size = new Size(224, 26);
             testToolStripMenuItem.Text = "Test";
             testToolStripMenuItem.Click += testToolStripMenuItem_Click;
+            // 
+            // typesToolStripMenuItem
+            // 
+            typesToolStripMenuItem.Name = "typesToolStripMenuItem";
+            typesToolStripMenuItem.Size = new Size(224, 26);
+            typesToolStripMenuItem.Text = "Types";
+            typesToolStripMenuItem.Click += typesToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -114,5 +122,6 @@
         private ToolStripMenuItem loadDataToolStripMenuItem;
         private ToolStripMenuItem calculateViolationsToolStripMenuItem;
         private ToolStripMenuItem testToolStripMenuItem;
+        private ToolStripMenuItem typesToolStripMenuItem;
     }
 }

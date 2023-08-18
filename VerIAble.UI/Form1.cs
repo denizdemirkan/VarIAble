@@ -1,12 +1,9 @@
 using FluentValidation;
 using FluentValidation.Results;
-using System.Linq;
+
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
+
 using VerIAble.UI.Classes;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static VerIAble.UI.Program;
 
 namespace VerIAble.UI
 {
@@ -28,10 +25,12 @@ namespace VerIAble.UI
 
         List<string> headerCellValues = new List<string>();
 
+        List<CustomType> CustomTypes = new List<CustomType>();
+
         List<ValidationResult> results = new List<ValidationResult>();
 
-        string csvFilePath = "C:\\Users\\deniz\\OneDrive\\Masaüstü\\example_set.csv";
-        //string csvFilePath = "C:\\Users\\deniz\\OneDrive\\Masaüstü\\example.csv";
+        //string csvFilePath = "C:\\Users\\deniz\\OneDrive\\Masaüstü\\example_set.csv";
+        string csvFilePath = "C:\\Users\\deniz\\OneDrive\\Masaüstü\\example.csv";
 
         public Form1()
         {
@@ -46,6 +45,16 @@ namespace VerIAble.UI
             Types.Add("UID");
             Types.Add("Phone Number");
             Types.Add("Name");
+
+            CustomType type1 = new CustomType("Deneme1");
+            CustomType type2 = new CustomType("Deneme2");
+            CustomType type3 = new CustomType("Deneme3");
+            CustomType type4 = new CustomType("Deneme4");
+
+            CustomTypes.Add(type1);
+            CustomTypes.Add(type2);
+            CustomTypes.Add(type3);
+            CustomTypes.Add(type4);
         }
 
         private void loadDataToolStripMenuItem_Click(object sender, EventArgs e)
@@ -59,7 +68,7 @@ namespace VerIAble.UI
                 {
 
                     string line = reader.ReadLine();
-                    string[] cells = line.Split(',');
+                    string[] cells = line.Split(';');
 
                     foreach (string cell in cells)
                     {
@@ -94,16 +103,29 @@ namespace VerIAble.UI
             dataGridView1.Columns.Insert(1, typeColumn);
 
             // SameWith Column
-            foreach(Cell header in Headers)
+            foreach (Cell header in Headers)
             {
                 headerCellValues.Add(header.Value);
             }
             DataGridViewComboBoxColumn sameWithColumn = new DataGridViewComboBoxColumn();
             sameWithColumn.HeaderText = "SameWith";
             sameWithColumn.DataSource = headerCellValues;
+
             dataGridView1.Columns[2].DataPropertyName = "MustSameWith";
             dataGridView1.Columns.Insert(2, sameWithColumn);
 
+            // Custom Types Column
+            DataGridViewComboBoxColumn comboBoxColumn = new DataGridViewComboBoxColumn();
+            comboBoxColumn.HeaderText = "CustomTypes";
+            comboBoxColumn.DataPropertyName = "Type"; // Veri baðlantýsý için CustomType sýnýfýnýn özelliði
+            comboBoxColumn.DataSource = CustomTypes; // ComboBox içeriði
+            comboBoxColumn.DisplayMember = "Type"; // Görüntülenecek metin özelliði
+            comboBoxColumn.ValueMember = "Type"; // Seçilen deðeri temsil eden özellik
+
+            dataGridView1.Columns.Add(comboBoxColumn);
+
+            //// DataGridView'e verileri yükleme
+            //dataGridView1.DataSource = CustomTypes;
         }
 
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -207,10 +229,7 @@ namespace VerIAble.UI
 
         private void testToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach(Cell c in Headers)
-            {
-               Console.WriteLine(c.MustSameWith);
-            }
+
         }
 
         private void TypeDefaults(Cell cell)
@@ -305,6 +324,11 @@ namespace VerIAble.UI
             }
 
         }
+
+        private void typesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
     public class DataValidator : AbstractValidator<Data>
@@ -338,15 +362,15 @@ namespace VerIAble.UI
             }
             if (data.OnlyLetters)
             {
-                RuleFor(x => x.Value).Must(OnlyLetter).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "ONLY Letters ALLOWED! "+ "// Violation with: " + data.Value ));
+                RuleFor(x => x.Value).Must(OnlyLetter).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "ONLY Letters ALLOWED! " + "// Violation with: " + data.Value));
             }
             if (data.MustBeUnique)
             {
-               RuleFor(x => x).Must(IsUnique).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Must be Unique" + "// Violation with: " + data.Value));
+                RuleFor(x => x).Must(IsUnique).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Must be Unique" + "// Violation with: " + data.Value));
             }
             if (data.TotalLenght != 0)
             {
-                RuleFor(x => x.Value).Length(data.TotalLenght).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Length must be EXACTLY: " + data.TotalLenght  +" // Violation with: " + data.Value));
+                RuleFor(x => x.Value).Length(data.TotalLenght).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Length must be EXACTLY: " + data.TotalLenght + " // Violation with: " + data.Value));
             }
             if (data.TotalLenght == 0)
             {
@@ -399,7 +423,7 @@ namespace VerIAble.UI
                 {
                     counter++;
                 }
-                if(counter > 1)
+                if (counter > 1)
                 {
                     return false;
                 }
@@ -416,11 +440,10 @@ namespace VerIAble.UI
         {
             return value.All(char.IsUpper);
         }
-
         private bool IsSameWith(Data data)
         {
             int rowIndex = (data.CsvIndex / headers.Count);
-            int columnIndex = data.CsvIndex+1 % headers.Count;
+            int columnIndex = data.CsvIndex + 1 % headers.Count;
             int sameIndex = headerValues.IndexOf(data.MustSameWith); // Same Column Index
 
             string sameValue = datas.ElementAt(headers.Count * rowIndex + sameIndex % headers.Count).Value;
