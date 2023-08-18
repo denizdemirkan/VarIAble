@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.Results;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using VerIAble.UI.Classes;
@@ -126,6 +127,23 @@ namespace VerIAble.UI
                 }
             }
 
+            // On SameWith Change
+            if (e.ColumnIndex == 2 && e.RowIndex >= 0)
+            {
+                DataGridViewComboBoxCell comboBoxCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex] as DataGridViewComboBoxCell;
+                if (comboBoxCell != null)
+                {
+                    int rowNumber = e.RowIndex;
+
+                    string selectedValue = comboBoxCell.Value.ToString();
+
+                    Headers.ElementAt(rowNumber).MustSameWith = selectedValue;
+
+                    dataGridView1.Invalidate();
+                    dataGridView1.Update();
+                }
+            }
+
         }
 
         private void calculateViolationsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -133,19 +151,13 @@ namespace VerIAble.UI
             foreach (Data data in CellDatas)
             {
                 ApplyRules(Headers.ElementAt(data.CsvIndex % Headers.Count), data);
-
                 // Data rules Applied
-                //Console.WriteLine(Headers.ElementAt(data.CsvIndex % Headers.Count).Value);
-                //Console.WriteLine(Headers.ElementAt(data.CsvIndex % Headers.Count).MustBeUnique);
-                //Console.WriteLine(Headers.ElementAt(data.CsvIndex % Headers.Count).OnlyLetters);
-                //Console.WriteLine(Headers.ElementAt(data.CsvIndex % Headers.Count).MaxLenght);
-                //Console.WriteLine(data.Value);
             }
 
 
             foreach (Data data in CellDatas)
             {
-                DataValidator validator = new DataValidator(data, this.Headers, this.CellDatas);
+                DataValidator validator = new DataValidator(data, this.Headers, this.CellDatas, this.headerCellValues);
                 ValidationResult result = validator.Validate(data);
                 if (!result.IsValid)
                 {
@@ -185,6 +197,11 @@ namespace VerIAble.UI
             data.OnlyLetters = header.OnlyLetters;
             data.OnlyNumerics = header.OnlyNumerics;
 
+            data.MustSameWith = header.MustSameWith;
+
+            data.MustStartsWith = header.MustStartsWith;
+            data.MustEndsWith = header.MustEndsWith;
+
             data.Type = header.Type;
         }
 
@@ -192,7 +209,7 @@ namespace VerIAble.UI
         {
             foreach(Cell c in Headers)
             {
-               Console.WriteLine(c.MustBeUnique);
+               Console.WriteLine(c.MustSameWith);
             }
         }
 
@@ -294,16 +311,18 @@ namespace VerIAble.UI
     {
         private List<Cell> headers;
         private List<Data> datas;
-        public DataValidator(Data data, List<Cell> headers, List<Data> datas)
+        private List<string> headerValues;
+        public DataValidator(Data data, List<Cell> headers, List<Data> datas, List<string> headerValues)
         {
             this.headers = headers;
             this.datas = datas;
+            this.headerValues = headerValues;
             int rawNumberOfData = data.CsvIndex / headers.Count + 2;
             int columnNumberOfData = data.CsvIndex % headers.Count + 1;
 
             if (data.Type.Equals("Email")) // Develop This for default settings
             {
-                RuleFor(x => x.Value).EmailAddress().WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Invalid EMAIL Format!"));
+                RuleFor(x => x.Value).EmailAddress().WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Invalid EMAIL Format!" + "// Violation with: " + data.Value));
             }
             if (!data.AllowNull)
             {
@@ -311,28 +330,40 @@ namespace VerIAble.UI
             }
             if (!data.AllowNumerics)
             {
-                RuleFor(x => x.Value).Must(AllowNumerics).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Numerics not ALLOWED!"));
+                RuleFor(x => x.Value).Must(AllowNumerics).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Numerics not ALLOWED!" + "// Violation with: " + data.Value));
             }
             if (data.OnlyNumerics)
             {
-                RuleFor(x => x.Value).Must(OnlyNumeric).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "ONLY Numerics ALLOWED!"));
+                RuleFor(x => x.Value).Must(OnlyNumeric).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "ONLY Numerics ALLOWED!" + "// Violation with: " + data.Value));
             }
             if (data.OnlyLetters)
             {
-                RuleFor(x => x.Value).Must(OnlyLetter).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "ONLY Letters ALLOWED!"));
+                RuleFor(x => x.Value).Must(OnlyLetter).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "ONLY Letters ALLOWED! "+ "// Violation with: " + data.Value ));
             }
             if (data.MustBeUnique)
             {
-               RuleFor(x => x).Must(IsUnique).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Must be Unique"));
+               RuleFor(x => x).Must(IsUnique).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Must be Unique" + "// Violation with: " + data.Value));
             }
             if (data.TotalLenght != 0)
             {
-                RuleFor(x => x.Value).Length(data.TotalLenght).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Length must be EXACTLY: " + data.TotalLenght));
+                RuleFor(x => x.Value).Length(data.TotalLenght).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Length must be EXACTLY: " + data.TotalLenght  +" // Violation with: " + data.Value));
             }
             if (data.TotalLenght == 0)
             {
-                RuleFor(x => x.Value).MinimumLength(data.MinLenght).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Length must be GREATER: " + data.MinLenght));
-                RuleFor(x => x.Value).MaximumLength(data.MaxLenght).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Length must be LESS: " + data.MaxLenght));
+                RuleFor(x => x.Value).MinimumLength(data.MinLenght).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Length must be GREATER: " + data.MinLenght + " // Violation with: " + data.Value));
+                RuleFor(x => x.Value).MaximumLength(data.MaxLenght).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Length must be LESS: " + data.MaxLenght + " // Violation with: " + data.Value));
+            }
+            if (data.MustSameWith != null)
+            {
+                RuleFor(x => x).Must(IsSameWith).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Mus same with: " + data.MustSameWith));
+            }
+            if (data.AllMustLower == true)
+            {
+                RuleFor(x => x.Value).Must(AllLower).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Must be LOWER CASE: " + data.Value));
+            }
+            if (data.AllMustLower == true)
+            {
+                RuleFor(x => x.Value).Must(AllUpper).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Must be UPPER CASE: " + data.Value));
             }
         }
 
@@ -375,6 +406,26 @@ namespace VerIAble.UI
             }
             return true;
 
+        }
+
+        private bool AllLower(string value)
+        {
+            return value.All(char.IsLower);
+        }
+        private bool AllUpper(string value)
+        {
+            return value.All(char.IsUpper);
+        }
+
+        private bool IsSameWith(Data data)
+        {
+            int rowIndex = (data.CsvIndex / headers.Count);
+            int columnIndex = data.CsvIndex+1 % headers.Count;
+            int sameIndex = headerValues.IndexOf(data.MustSameWith); // Same Column Index
+
+            string sameValue = datas.ElementAt(headers.Count * rowIndex + sameIndex % headers.Count).Value;
+
+            return data.Value.Equals(sameValue);
         }
 
     }
