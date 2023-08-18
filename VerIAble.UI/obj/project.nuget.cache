@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "p0wzoFLAeHU20oo7W3qtuPkJA5sYMUxNOHQM4CD0MC/TSJi+K4Ai5vJXQBIjawZ4a17s3ffHK38oS164ZuYkDg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\deniz\\source\\repos\\VerIAble\\VerIAble.UI\\VerIAble.UI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\deniz\\.nuget\\packages\\fluentvalidation\\11.7.1\\fluentvalidation.11.7.1.nupkg.sha512"
+  ],
+  "logs": []
+}
