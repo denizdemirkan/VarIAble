@@ -2,7 +2,6 @@ using FluentValidation;
 using FluentValidation.Results;
 
 using System.Runtime.InteropServices;
-
 using VerIAble.UI.Classes;
 
 namespace VerIAble.UI
@@ -29,7 +28,7 @@ namespace VerIAble.UI
 
         List<ValidationResult> results = new List<ValidationResult>();
 
-        string csvFilePath = "C:\\Users\\deniz\\OneDrive\\Masaüstü\\example_set.csv";
+        //string csvFilePath = "C:\\Users\\deniz\\OneDrive\\Masaüstü\\example_set.csv";
         //string csvFilePath = "C:\\Users\\deniz\\OneDrive\\Masaüstü\\example.csv";
 
         public Form1()
@@ -146,77 +145,88 @@ namespace VerIAble.UI
 
         private void loadDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Start Reading
-            using (StreamReader reader = new StreamReader(csvFilePath))
+            DialogResult result = MessageBox.Show("Are you sure to load CSV file? Your unsaved changes will be LOST!", "Load File", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
             {
-                int lineCount = 1;
-                int indexCount = 0;
-                while (!reader.EndOfStream)
+                using (CsvSeperatorQuestionForm seperatorQuestion = new CsvSeperatorQuestionForm())
                 {
-
-                    string line = reader.ReadLine();
-                    string[] cells = line.Split(',');
-
-                    foreach (string cell in cells)
+                    if (seperatorQuestion.ShowDialog() == DialogResult.OK)
                     {
-                        if (lineCount == 1)
                         {
-                            Field newHeader = new Field();
-                            newHeader.Value = cell;
-                            Headers.Add(newHeader);
+                            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                            {
+                                openFileDialog.Filter = "CSV file (*.csv)|*.csv";
+                                openFileDialog.Title = "Select CSV File";
 
-                            // Headers loaded
-                        }
-                        else
-                        {
-                            Data newData = new Data();
-                            newData.Value = cell;
-                            newData.CsvIndex = indexCount;
-                            CellDatas.Add(newData);
-                            indexCount++;
-                            // Data cells loaded
+                                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                                {
+                                    using (StreamReader reader = new StreamReader(openFileDialog.FileName))
+                                    {
+                                        int lineCount = 1;
+                                        int indexCount = 0;
+                                        while (!reader.EndOfStream)
+                                        {
+
+                                            string line = reader.ReadLine();
+                                            string[] cells = line.Split(seperatorQuestion.SelectedOption);
+
+                                            foreach (string cell in cells)
+                                            {
+                                                if (lineCount == 1)
+                                                {
+                                                    Field newHeader = new Field();
+                                                    newHeader.Value = cell;
+                                                    Headers.Add(newHeader);
+
+                                                    // Headers loaded
+                                                }
+                                                else
+                                                {
+                                                    Data newData = new Data();
+                                                    newData.Value = cell;
+                                                    newData.CsvIndex = indexCount;
+                                                    CellDatas.Add(newData);
+                                                    indexCount++;
+                                                    // Data cells loaded
+                                                }
+                                            }
+                                            lineCount++;
+                                        }
+
+                                    }
+                                    dataGridView1.DataSource = Headers;
+
+                                    // Custom Types Column
+                                    DataGridViewComboBoxColumn comboBoxColumn = new DataGridViewComboBoxColumn();
+                                    comboBoxColumn.HeaderText = "CustomTypes";
+                                    comboBoxColumn.DataPropertyName = "Type"; // Veri baðlantýsý için CustomType sýnýfýnýn özelliði
+                                    comboBoxColumn.DataSource = CustomTypes; // ComboBox içeriði
+                                    comboBoxColumn.DisplayMember = "Type"; // Görüntülenecek metin özelliði
+                                    comboBoxColumn.ValueMember = "Type"; // Seçilen deðeri temsil eden özellik
+
+                                    dataGridView1.Columns[1].DataPropertyName = "Type";
+                                    dataGridView1.Columns.Insert(1, comboBoxColumn);
+
+
+                                    // SameWith Column
+                                    foreach (Field header in Headers)
+                                    {
+                                        headerCellValues.Add(header.Value);
+                                    }
+                                    DataGridViewComboBoxColumn sameWithColumn = new DataGridViewComboBoxColumn();
+                                    sameWithColumn.HeaderText = "SameWith";
+                                    sameWithColumn.DataSource = headerCellValues;
+
+                                    dataGridView1.Columns[2].DataPropertyName = "MustSameWith";
+                                    dataGridView1.Columns.Insert(2, sameWithColumn);
+
+                                }
+                            }
                         }
                     }
-                    lineCount++;
                 }
-
             }
-            dataGridView1.DataSource = Headers;
-            
-            // Type Column for Default Settings
-            //DataGridViewComboBoxColumn typeColumn = new DataGridViewComboBoxColumn();
-            //typeColumn.HeaderText = "Type";
-            //typeColumn.DataSource = Types;
-            //dataGridView1.Columns[1].DataPropertyName = "Type";
-            //dataGridView1.Columns.Insert(1, typeColumn);
-
-            // Custom Types Column
-            DataGridViewComboBoxColumn comboBoxColumn = new DataGridViewComboBoxColumn();
-            comboBoxColumn.HeaderText = "CustomTypes";
-            comboBoxColumn.DataPropertyName = "Type"; // Veri baðlantýsý için CustomType sýnýfýnýn özelliði
-            comboBoxColumn.DataSource = CustomTypes; // ComboBox içeriði
-            comboBoxColumn.DisplayMember = "Type"; // Görüntülenecek metin özelliði
-            comboBoxColumn.ValueMember = "Type"; // Seçilen deðeri temsil eden özellik
-
-            dataGridView1.Columns[1].DataPropertyName = "Type";
-            dataGridView1.Columns.Insert(1, comboBoxColumn);
-
-
-            // SameWith Column
-            foreach (Field header in Headers)
-            {
-                headerCellValues.Add(header.Value);
-            }
-            DataGridViewComboBoxColumn sameWithColumn = new DataGridViewComboBoxColumn();
-            sameWithColumn.HeaderText = "SameWith";
-            sameWithColumn.DataSource = headerCellValues;
-
-            dataGridView1.Columns[2].DataPropertyName = "MustSameWith";
-            dataGridView1.Columns.Insert(2, sameWithColumn);
-
-
-            //// DataGridView'e verileri yükleme
-            //dataGridView1.DataSource = CustomTypes;
         }
 
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -375,101 +385,9 @@ namespace VerIAble.UI
 
         private void testToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            ExportImportForm exportImportForm = new ExportImportForm(CustomTypes);
+            exportImportForm.Show();
         }
-
-        //private void TypeDefaults(Field cell)
-        //{
-        //    if (cell.Type.Equals("Integer"))
-        //    {
-        //        cell.OnlyNumerics = true;
-        //        cell.OnlyLetters = false;
-
-        //        cell.AllMustLower = false;
-        //        cell.AllMustUpper = false;
-
-        //        cell.AllowNumerics = true;
-        //        cell.AllowSpace = false;
-        //        cell.AllowSpecialCharacters = false;
-
-        //    }
-        //    if (cell.Type.Equals("String"))
-        //    {
-        //        cell.OnlyNumerics = false;
-        //        cell.OnlyLetters = false;
-
-        //        cell.AllMustLower = false;
-        //        cell.AllMustUpper = false;
-
-        //        cell.AllowNumerics = true;
-        //        cell.AllowSpace = true;
-        //        cell.AllowSpecialCharacters = true;
-        //    }
-        //    if (cell.Type.Equals("Email"))
-        //    {
-        //        cell.OnlyNumerics = false;
-        //        cell.OnlyLetters = false;
-
-        //        cell.AllMustLower = false;
-        //        cell.AllMustUpper = false;
-
-        //        cell.MustBeUnique = true;
-        //        cell.AllowNumerics = true;
-        //        cell.AllowSpace = false;
-        //        cell.AllowSpecialCharacters = true;
-        //    }
-        //    if (cell.Type.Equals("UID"))
-        //    {
-        //        cell.OnlyNumerics = true;
-        //        cell.OnlyLetters = false;
-
-        //        cell.AllMustLower = false;
-        //        cell.AllMustUpper = false;
-
-        //        cell.AllowNumerics = true;
-        //        cell.AllowSpace = false;
-        //        cell.AllowSpecialCharacters = false;
-
-        //        cell.MustBeUnique = true;
-        //        cell.AllowNull = false;
-        //        cell.MustBeInteger = true;
-        //    }
-        //    if (cell.Type.Equals("Phone Number"))
-        //    {
-        //        cell.TotalLenght = 10;
-
-        //        cell.OnlyNumerics = true;
-        //        cell.OnlyLetters = false;
-
-        //        cell.AllMustLower = false;
-        //        cell.AllMustUpper = false;
-
-        //        cell.AllowNumerics = true;
-        //        cell.AllowSpace = false;
-        //        cell.AllowSpecialCharacters = false;
-
-        //        cell.MustBeUnique = true;
-        //        cell.AllowNull = false;
-        //        cell.MustBeInteger = true;
-        //    }
-        //    if (cell.Type.Equals("Name"))
-        //    {
-        //        cell.OnlyNumerics = false;
-        //        cell.OnlyLetters = true;
-
-        //        cell.AllMustLower = false;
-        //        cell.AllMustUpper = false;
-
-        //        cell.AllowNumerics = false;
-        //        cell.AllowSpace = true;
-        //        cell.AllowSpecialCharacters = false;
-
-        //        cell.MustBeUnique = false;
-        //        cell.AllowNull = false;
-        //        cell.MustBeInteger = false;
-        //    }
-
-        //}
 
         private void typesToolStripMenuItem_Click(object sender, EventArgs e)
         {
