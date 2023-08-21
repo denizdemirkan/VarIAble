@@ -63,7 +63,7 @@
             // 
             // toolStripMenuItem1
             // 
-            toolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { loadDataToolStripMenuItem, calculateViolationsToolStripMenuItem, testToolStripMenuItem, typesToolStripMenuItem });
+            toolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { loadDataToolStripMenuItem, calculateViolationsToolStripMenuItem, typesToolStripMenuItem, testToolStripMenuItem });
             toolStripMenuItem1.Name = "toolStripMenuItem1";
             toolStripMenuItem1.Size = new Size(60, 24);
             toolStripMenuItem1.Text = "Menu";
@@ -71,29 +71,29 @@
             // loadDataToolStripMenuItem
             // 
             loadDataToolStripMenuItem.Name = "loadDataToolStripMenuItem";
-            loadDataToolStripMenuItem.Size = new Size(224, 26);
+            loadDataToolStripMenuItem.Size = new Size(227, 26);
             loadDataToolStripMenuItem.Text = "Load Data";
             loadDataToolStripMenuItem.Click += loadDataToolStripMenuItem_Click;
             // 
             // calculateViolationsToolStripMenuItem
             // 
             calculateViolationsToolStripMenuItem.Name = "calculateViolationsToolStripMenuItem";
-            calculateViolationsToolStripMenuItem.Size = new Size(224, 26);
+            calculateViolationsToolStripMenuItem.Size = new Size(227, 26);
             calculateViolationsToolStripMenuItem.Text = "Calculate Violations";
             calculateViolationsToolStripMenuItem.Click += calculateViolationsToolStripMenuItem_Click;
             // 
             // testToolStripMenuItem
             // 
             testToolStripMenuItem.Name = "testToolStripMenuItem";
-            testToolStripMenuItem.Size = new Size(224, 26);
-            testToolStripMenuItem.Text = "Test";
+            testToolStripMenuItem.Size = new Size(227, 26);
+            testToolStripMenuItem.Text = "Export / Import Tool";
             testToolStripMenuItem.Click += testToolStripMenuItem_Click;
             // 
             // typesToolStripMenuItem
             // 
             typesToolStripMenuItem.Name = "typesToolStripMenuItem";
-            typesToolStripMenuItem.Size = new Size(224, 26);
-            typesToolStripMenuItem.Text = "Types";
+            typesToolStripMenuItem.Size = new Size(227, 26);
+            typesToolStripMenuItem.Text = "Custom Types";
             typesToolStripMenuItem.Click += typesToolStripMenuItem_Click;
             // 
             // Form1

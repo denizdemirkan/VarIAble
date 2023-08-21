@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VerIAble.UI.Classes
 {
-    public class Cell
+    public class Field
     {
         public string Value { get; set; }
         [Browsable(false)]
@@ -39,7 +39,7 @@ namespace VerIAble.UI.Classes
         public string MustSameWith { get; set; }
 
         public string Pattern { get; set; }
-        public Cell()
+        public Field()
         {
             this.Type = "String";
             this.MaxLenght = 50;

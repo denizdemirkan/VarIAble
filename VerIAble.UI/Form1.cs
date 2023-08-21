@@ -17,7 +17,7 @@ namespace VerIAble.UI
 
         List<string> Errors = new List<string>();
 
-        List<Cell> Headers = new List<Cell>();
+        List<Field> Headers = new List<Field>();
 
         List<Data> CellDatas = new List<Data>();
 
@@ -29,8 +29,8 @@ namespace VerIAble.UI
 
         List<ValidationResult> results = new List<ValidationResult>();
 
-        //string csvFilePath = "C:\\Users\\deniz\\OneDrive\\Masaüstü\\example_set.csv";
-        string csvFilePath = "C:\\Users\\deniz\\OneDrive\\Masaüstü\\example.csv";
+        string csvFilePath = "C:\\Users\\deniz\\OneDrive\\Masaüstü\\example_set.csv";
+        //string csvFilePath = "C:\\Users\\deniz\\OneDrive\\Masaüstü\\example.csv";
 
         public Form1()
         {
@@ -47,6 +47,9 @@ namespace VerIAble.UI
             Types.Add("Name");
 
             CustomType type1 = new CustomType("Deneme1");
+            type1.MaxLenght = 99;
+            type1.MinLenght = 12;
+            type1.AllMustLower = true;
             CustomType type2 = new CustomType("Deneme2");
             CustomType type3 = new CustomType("Deneme3");
             CustomType type4 = new CustomType("Deneme4");
@@ -68,13 +71,13 @@ namespace VerIAble.UI
                 {
 
                     string line = reader.ReadLine();
-                    string[] cells = line.Split(';');
+                    string[] cells = line.Split(',');
 
                     foreach (string cell in cells)
                     {
                         if (lineCount == 1)
                         {
-                            Cell newHeader = new Cell();
+                            Field newHeader = new Field();
                             newHeader.Value = cell;
                             Headers.Add(newHeader);
 
@@ -94,16 +97,29 @@ namespace VerIAble.UI
                 }
 
             }
-            // Type Column for Default Settings
             dataGridView1.DataSource = Headers;
-            DataGridViewComboBoxColumn typeColumn = new DataGridViewComboBoxColumn();
-            typeColumn.HeaderText = "Type";
-            typeColumn.DataSource = Types;
+            
+            // Type Column for Default Settings
+            //DataGridViewComboBoxColumn typeColumn = new DataGridViewComboBoxColumn();
+            //typeColumn.HeaderText = "Type";
+            //typeColumn.DataSource = Types;
+            //dataGridView1.Columns[1].DataPropertyName = "Type";
+            //dataGridView1.Columns.Insert(1, typeColumn);
+
+            // Custom Types Column
+            DataGridViewComboBoxColumn comboBoxColumn = new DataGridViewComboBoxColumn();
+            comboBoxColumn.HeaderText = "CustomTypes";
+            comboBoxColumn.DataPropertyName = "Type"; // Veri baðlantýsý için CustomType sýnýfýnýn özelliði
+            comboBoxColumn.DataSource = CustomTypes; // ComboBox içeriði
+            comboBoxColumn.DisplayMember = "Type"; // Görüntülenecek metin özelliði
+            comboBoxColumn.ValueMember = "Type"; // Seçilen deðeri temsil eden özellik
+
             dataGridView1.Columns[1].DataPropertyName = "Type";
-            dataGridView1.Columns.Insert(1, typeColumn);
+            dataGridView1.Columns.Insert(1, comboBoxColumn);
+
 
             // SameWith Column
-            foreach (Cell header in Headers)
+            foreach (Field header in Headers)
             {
                 headerCellValues.Add(header.Value);
             }
@@ -114,15 +130,6 @@ namespace VerIAble.UI
             dataGridView1.Columns[2].DataPropertyName = "MustSameWith";
             dataGridView1.Columns.Insert(2, sameWithColumn);
 
-            // Custom Types Column
-            DataGridViewComboBoxColumn comboBoxColumn = new DataGridViewComboBoxColumn();
-            comboBoxColumn.HeaderText = "CustomTypes";
-            comboBoxColumn.DataPropertyName = "Type"; // Veri baðlantýsý için CustomType sýnýfýnýn özelliði
-            comboBoxColumn.DataSource = CustomTypes; // ComboBox içeriði
-            comboBoxColumn.DisplayMember = "Type"; // Görüntülenecek metin özelliði
-            comboBoxColumn.ValueMember = "Type"; // Seçilen deðeri temsil eden özellik
-
-            dataGridView1.Columns.Add(comboBoxColumn);
 
             //// DataGridView'e verileri yükleme
             //dataGridView1.DataSource = CustomTypes;
@@ -131,6 +138,25 @@ namespace VerIAble.UI
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             // On Type Change
+            //if (e.ColumnIndex == 1 && e.RowIndex >= 0)
+            //{
+            //    DataGridViewComboBoxCell comboBoxCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex] as DataGridViewComboBoxCell;
+            //    if (comboBoxCell != null)
+            //    {
+            //        int rowNumber = e.RowIndex;
+
+            //        string selectedValue = comboBoxCell.Value.ToString();
+
+            //        Headers.ElementAt(rowNumber).Type = selectedValue;
+
+            //        TypeDefaults(Headers.ElementAt(rowNumber));
+
+            //        dataGridView1.Invalidate();
+            //        dataGridView1.Update();
+            //    }
+            //}
+
+            // On CustomType Change
             if (e.ColumnIndex == 1 && e.RowIndex >= 0)
             {
                 DataGridViewComboBoxCell comboBoxCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex] as DataGridViewComboBoxCell;
@@ -142,7 +168,14 @@ namespace VerIAble.UI
 
                     Headers.ElementAt(rowNumber).Type = selectedValue;
 
-                    TypeDefaults(Headers.ElementAt(rowNumber));
+                    //TypeDefaults(Headers.ElementAt(rowNumber));
+                    foreach (CustomType ct in CustomTypes)
+                    {
+                        if (ct.Type.Equals(selectedValue))
+                        {
+                            ApplyRulesToField(Headers.ElementAt(rowNumber), ct);
+                        }
+                    }
 
                     dataGridView1.Invalidate();
                     dataGridView1.Update();
@@ -198,7 +231,7 @@ namespace VerIAble.UI
 
         }
 
-        private void ApplyRules(Cell header, Data data)
+        private void ApplyRules(Field header, Data data)
         {
             data.AllMustLower = header.AllMustLower;
             data.AllMustUpper = header.AllMustUpper;
@@ -227,12 +260,41 @@ namespace VerIAble.UI
             data.Type = header.Type;
         }
 
+        private void ApplyRulesToField(Field field, CustomType customType)
+        {
+            field.AllMustLower = customType.AllMustLower;
+            field.AllMustUpper = customType.AllMustUpper;
+
+            field.AllowSpace = customType.AllowSpace;
+            field.AllowNull = customType.AllowNull;
+            field.AllowNumerics = customType.AllowNumerics;
+            field.AllowSpecialCharacters = customType.AllowSpecialCharacters;
+
+            field.MaxLenght = customType.MaxLenght;
+            field.MinLenght = customType.MinLenght;
+            field.TotalLenght = customType.TotalLenght;
+
+            field.MustBeUnique = customType.MustBeUnique;
+            field.MustBeDecimal = customType.MustBeDecimal;
+            field.MustBeInteger = customType.MustBeInteger;
+
+            field.OnlyLetters = customType.OnlyLetters;
+            field.OnlyNumerics = customType.OnlyNumerics;
+
+            field.MustSameWith = customType.MustSameWith;
+
+            field.MustStartsWith = customType.MustStartsWith;
+            field.MustEndsWith = customType.MustEndsWith;
+
+            field.Type = customType.Type;
+        }
+
         private void testToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void TypeDefaults(Cell cell)
+        private void TypeDefaults(Field cell)
         {
             if (cell.Type.Equals("Integer"))
             {
@@ -327,16 +389,17 @@ namespace VerIAble.UI
 
         private void typesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            CustomTypesForm customTypesForm = new CustomTypesForm(CustomTypes);
+            customTypesForm.Show();
         }
     }
 
     public class DataValidator : AbstractValidator<Data>
     {
-        private List<Cell> headers;
+        private List<Field> headers;
         private List<Data> datas;
         private List<string> headerValues;
-        public DataValidator(Data data, List<Cell> headers, List<Data> datas, List<string> headerValues)
+        public DataValidator(Data data, List<Field> headers, List<Data> datas, List<string> headerValues)
         {
             this.headers = headers;
             this.datas = datas;
@@ -385,7 +448,7 @@ namespace VerIAble.UI
             {
                 RuleFor(x => x.Value).Must(AllLower).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Must be LOWER CASE: " + data.Value));
             }
-            if (data.AllMustLower == true)
+            if (data.AllMustUpper == true)
             {
                 RuleFor(x => x.Value).Must(AllUpper).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Must be UPPER CASE: " + data.Value));
             }
@@ -431,7 +494,6 @@ namespace VerIAble.UI
             return true;
 
         }
-
         private bool AllLower(string value)
         {
             return value.All(char.IsLower);

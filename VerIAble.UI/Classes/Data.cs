@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VerIAble.UI.Classes
 {
-    public class Data : Cell
+    public class Data : Field
     {
         public int CsvIndex { get; set; }
     }

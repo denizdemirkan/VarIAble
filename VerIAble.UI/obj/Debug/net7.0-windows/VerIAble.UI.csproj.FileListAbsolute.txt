@@ -17,3 +17,4 @@ C:\Users\deniz\source\repos\VerIAble\VerIAble.UI\obj\Debug\net7.0-windows\refint
 C:\Users\deniz\source\repos\VerIAble\VerIAble.UI\obj\Debug\net7.0-windows\VerIAble.UI.pdb
 C:\Users\deniz\source\repos\VerIAble\VerIAble.UI\obj\Debug\net7.0-windows\VerIAble.UI.genruntimeconfig.cache
 C:\Users\deniz\source\repos\VerIAble\VerIAble.UI\obj\Debug\net7.0-windows\ref\VerIAble.UI.dll
+C:\Users\deniz\source\repos\VerIAble\VerIAble.UI\obj\Debug\net7.0-windows\VerIAble.UI.CustomTypesForm.resources
