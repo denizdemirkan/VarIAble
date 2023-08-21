@@ -10,6 +10,7 @@ namespace VerIAble.UI
     {
         private ComboBox optionComboBox;
         private Button okButton;
+        private Label label1;
         private Button cancelButton;
 
         public CsvSeperatorQuestionForm()
@@ -19,26 +20,58 @@ namespace VerIAble.UI
 
         private void InitializeComponent()
         {
-            Text = "Seçenek Seçimi";
-            Width = 300;
-            Height = 150;
-
             optionComboBox = new ComboBox();
-            optionComboBox.Items.AddRange(new string[] { ";", "," });
-            optionComboBox.Location = new System.Drawing.Point(50, 50);
-            Controls.Add(optionComboBox);
-
             okButton = new Button();
-            okButton.Text = "Tamam";
-            okButton.Location = new System.Drawing.Point(50, 100);
-            okButton.Click += OkButton_Click;
-            Controls.Add(okButton);
-
             cancelButton = new Button();
-            cancelButton.Text = "İptal";
-            cancelButton.Location = new System.Drawing.Point(150, 100);
+            label1 = new Label();
+            SuspendLayout();
+            // 
+            // optionComboBox
+            // 
+            optionComboBox.Items.AddRange(new object[] { ";", "," });
+            optionComboBox.Location = new Point(70, 46);
+            optionComboBox.Name = "optionComboBox";
+            optionComboBox.Size = new Size(172, 28);
+            optionComboBox.TabIndex = 0;
+            // 
+            // okButton
+            // 
+            okButton.Location = new Point(70, 80);
+            okButton.Name = "okButton";
+            okButton.Size = new Size(76, 33);
+            okButton.TabIndex = 1;
+            okButton.Text = "Select";
+            okButton.Click += OkButton_Click;
+            // 
+            // cancelButton
+            // 
+            cancelButton.Location = new Point(170, 80);
+            cancelButton.Name = "cancelButton";
+            cancelButton.Size = new Size(72, 33);
+            cancelButton.TabIndex = 2;
+            cancelButton.Text = "Cancel";
             cancelButton.Click += CancelButton_Click;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(73, 23);
+            label1.Name = "label1";
+            label1.Size = new Size(169, 20);
+            label1.TabIndex = 3;
+            label1.Text = "Choose a CSV Seperator";
+            // 
+            // CsvSeperatorQuestionForm
+            // 
+            ClientSize = new Size(322, 145);
+            Controls.Add(label1);
+            Controls.Add(optionComboBox);
+            Controls.Add(okButton);
             Controls.Add(cancelButton);
+            Name = "CsvSeperatorQuestionForm";
+            Text = "Select CSV Seperator";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         private void OkButton_Click(object sender, EventArgs e)

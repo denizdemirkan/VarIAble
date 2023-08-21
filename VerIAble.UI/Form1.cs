@@ -141,7 +141,6 @@ namespace VerIAble.UI
 
 
         }
-        
 
         private void loadDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -295,36 +294,6 @@ namespace VerIAble.UI
 
         }
 
-        private void calculateViolationsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            foreach (Data data in CellDatas)
-            {
-                ApplyRules(Headers.ElementAt(data.CsvIndex % Headers.Count), data);
-                // Data rules Applied
-            }
-
-
-            foreach (Data data in CellDatas)
-            {
-                DataValidator validator = new DataValidator(data, this.Headers, this.CellDatas, this.headerCellValues);
-                ValidationResult result = validator.Validate(data);
-                if (!result.IsValid)
-                {
-                    results.Add(result);
-                }
-            }
-
-            // Loop over all failures
-            foreach (ValidationResult validationResult in results)
-            {
-                foreach (ValidationFailure failure in validationResult.Errors)
-                {
-                    Console.WriteLine(failure.ErrorMessage);
-                }
-            }
-
-        }
-
         private void ApplyRules(Field header, Data data)
         {
             data.AllMustLower = header.AllMustLower;
@@ -394,6 +363,38 @@ namespace VerIAble.UI
             CustomTypesForm customTypesForm = new CustomTypesForm(CustomTypes);
             customTypesForm.Show();
         }
+
+        private void consoleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            results.Clear();
+            Console.WriteLine("--------------------------------------------------------------------------");
+
+            foreach (Data data in CellDatas)
+            {
+                ApplyRules(Headers.ElementAt(data.CsvIndex % Headers.Count), data);
+                // Data rules Applied
+            }
+
+            foreach (Data data in CellDatas)
+            {
+                DataValidator validator = new DataValidator(data, this.Headers, this.CellDatas, this.headerCellValues);
+                ValidationResult result = validator.Validate(data);
+                if (!result.IsValid)
+                {
+                    results.Add(result);
+                }
+            }
+
+            // Loop over all failures
+            foreach (ValidationResult validationResult in results)
+            {
+                foreach (ValidationFailure failure in validationResult.Errors)
+                {
+                    Console.WriteLine(failure.ErrorMessage);
+                }
+            }
+            Console.WriteLine("--------------------------------------------------------------------------");
+        }
     }
 
     public class DataValidator : AbstractValidator<Data>
@@ -455,7 +456,6 @@ namespace VerIAble.UI
                 RuleFor(x => x.Value).Must(AllUpper).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Must be UPPER CASE: " + data.Value));
             }
         }
-
         private string ViolationMessage(int row, int column, string Message)
         {
             return "There is violation in ROW: " + row.ToString() + " & COLUMN: " + column.ToString() + " " + Message;
@@ -514,6 +514,5 @@ namespace VerIAble.UI
 
             return data.Value.Equals(sameValue);
         }
-
     }
 }
