@@ -46,19 +46,103 @@ namespace VerIAble.UI
             Types.Add("Phone Number");
             Types.Add("Name");
 
-            CustomType type1 = new CustomType("Deneme1");
-            type1.MaxLenght = 99;
-            type1.MinLenght = 12;
-            type1.AllMustLower = true;
-            CustomType type2 = new CustomType("Deneme2");
-            CustomType type3 = new CustomType("Deneme3");
-            CustomType type4 = new CustomType("Deneme4");
+            CustomType integerType = new CustomType("Integer")
+            {
+                OnlyNumerics = true,
+                OnlyLetters = false,
 
-            CustomTypes.Add(type1);
-            CustomTypes.Add(type2);
-            CustomTypes.Add(type3);
-            CustomTypes.Add(type4);
+                AllMustLower = false,
+                AllMustUpper = false,
+
+                AllowNumerics = true,
+                AllowSpace = false,
+                AllowSpecialCharacters = false
+            };
+            CustomType stringType = new CustomType("String")
+            {
+                OnlyNumerics = false,
+                OnlyLetters = false,
+
+                AllMustLower = false,
+                AllMustUpper = false,
+
+                AllowNumerics = true,
+                AllowSpace = true,
+                AllowSpecialCharacters = true
+            };
+            CustomType emailType = new CustomType("Email")
+            {
+                OnlyNumerics = false,
+                OnlyLetters = false,
+
+                AllMustLower = false,
+                AllMustUpper = false,
+
+                MustBeUnique = true,
+
+                AllowNumerics = true,
+                AllowSpace = false,
+                AllowSpecialCharacters = true
+            };
+            CustomType uidType = new CustomType("UID")
+            {
+                OnlyNumerics = true,
+                OnlyLetters = false,
+
+                AllMustLower = false,
+                AllMustUpper = false,
+
+                MustBeUnique = true,
+
+                AllowNumerics = true,
+                AllowSpace = false,
+                AllowSpecialCharacters = false,
+                MustBeInteger = true
+            };
+            CustomType phoneNumberType = new CustomType("Phone Number")
+            {
+                TotalLenght = 10,
+
+                OnlyNumerics = true,
+                OnlyLetters = false,
+
+                AllMustLower = false,
+                AllMustUpper = false,
+
+                MustBeInteger = true,
+                MustBeUnique = true,
+
+                AllowNumerics = true,
+                AllowSpace = false,
+                AllowSpecialCharacters = false
+            };
+            CustomType nameType = new CustomType("Name")
+            {
+                OnlyNumerics = false,
+                OnlyLetters = true,
+
+                AllMustLower = false,
+                AllMustUpper = false,
+
+                AllowNumerics = false,
+                AllowSpace = true,
+                AllowSpecialCharacters = false,
+
+                MustBeUnique = false,
+                MustBeInteger = false,
+                MustBeDecimal = false,
+            };
+
+            CustomTypes.Add(integerType);
+            CustomTypes.Add(phoneNumberType);
+            CustomTypes.Add(nameType);
+            CustomTypes.Add(stringType);
+            CustomTypes.Add(emailType);
+            CustomTypes.Add(uidType);
+
+
         }
+        
 
         private void loadDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -294,98 +378,98 @@ namespace VerIAble.UI
 
         }
 
-        private void TypeDefaults(Field cell)
-        {
-            if (cell.Type.Equals("Integer"))
-            {
-                cell.OnlyNumerics = true;
-                cell.OnlyLetters = false;
+        //private void TypeDefaults(Field cell)
+        //{
+        //    if (cell.Type.Equals("Integer"))
+        //    {
+        //        cell.OnlyNumerics = true;
+        //        cell.OnlyLetters = false;
 
-                cell.AllMustLower = false;
-                cell.AllMustUpper = false;
+        //        cell.AllMustLower = false;
+        //        cell.AllMustUpper = false;
 
-                cell.AllowNumerics = true;
-                cell.AllowSpace = false;
-                cell.AllowSpecialCharacters = false;
+        //        cell.AllowNumerics = true;
+        //        cell.AllowSpace = false;
+        //        cell.AllowSpecialCharacters = false;
 
-            }
-            if (cell.Type.Equals("String"))
-            {
-                cell.OnlyNumerics = false;
-                cell.OnlyLetters = false;
+        //    }
+        //    if (cell.Type.Equals("String"))
+        //    {
+        //        cell.OnlyNumerics = false;
+        //        cell.OnlyLetters = false;
 
-                cell.AllMustLower = false;
-                cell.AllMustUpper = false;
+        //        cell.AllMustLower = false;
+        //        cell.AllMustUpper = false;
 
-                cell.AllowNumerics = true;
-                cell.AllowSpace = true;
-                cell.AllowSpecialCharacters = true;
-            }
-            if (cell.Type.Equals("Email"))
-            {
-                cell.OnlyNumerics = false;
-                cell.OnlyLetters = false;
+        //        cell.AllowNumerics = true;
+        //        cell.AllowSpace = true;
+        //        cell.AllowSpecialCharacters = true;
+        //    }
+        //    if (cell.Type.Equals("Email"))
+        //    {
+        //        cell.OnlyNumerics = false;
+        //        cell.OnlyLetters = false;
 
-                cell.AllMustLower = false;
-                cell.AllMustUpper = false;
+        //        cell.AllMustLower = false;
+        //        cell.AllMustUpper = false;
 
-                cell.MustBeUnique = true;
-                cell.AllowNumerics = true;
-                cell.AllowSpace = false;
-                cell.AllowSpecialCharacters = true;
-            }
-            if (cell.Type.Equals("UID"))
-            {
-                cell.OnlyNumerics = true;
-                cell.OnlyLetters = false;
+        //        cell.MustBeUnique = true;
+        //        cell.AllowNumerics = true;
+        //        cell.AllowSpace = false;
+        //        cell.AllowSpecialCharacters = true;
+        //    }
+        //    if (cell.Type.Equals("UID"))
+        //    {
+        //        cell.OnlyNumerics = true;
+        //        cell.OnlyLetters = false;
 
-                cell.AllMustLower = false;
-                cell.AllMustUpper = false;
+        //        cell.AllMustLower = false;
+        //        cell.AllMustUpper = false;
 
-                cell.AllowNumerics = true;
-                cell.AllowSpace = false;
-                cell.AllowSpecialCharacters = false;
+        //        cell.AllowNumerics = true;
+        //        cell.AllowSpace = false;
+        //        cell.AllowSpecialCharacters = false;
 
-                cell.MustBeUnique = true;
-                cell.AllowNull = false;
-                cell.MustBeInteger = true;
-            }
-            if (cell.Type.Equals("Phone Number"))
-            {
-                cell.TotalLenght = 10;
+        //        cell.MustBeUnique = true;
+        //        cell.AllowNull = false;
+        //        cell.MustBeInteger = true;
+        //    }
+        //    if (cell.Type.Equals("Phone Number"))
+        //    {
+        //        cell.TotalLenght = 10;
 
-                cell.OnlyNumerics = true;
-                cell.OnlyLetters = false;
+        //        cell.OnlyNumerics = true;
+        //        cell.OnlyLetters = false;
 
-                cell.AllMustLower = false;
-                cell.AllMustUpper = false;
+        //        cell.AllMustLower = false;
+        //        cell.AllMustUpper = false;
 
-                cell.AllowNumerics = true;
-                cell.AllowSpace = false;
-                cell.AllowSpecialCharacters = false;
+        //        cell.AllowNumerics = true;
+        //        cell.AllowSpace = false;
+        //        cell.AllowSpecialCharacters = false;
 
-                cell.MustBeUnique = true;
-                cell.AllowNull = false;
-                cell.MustBeInteger = true;
-            }
-            if (cell.Type.Equals("Name"))
-            {
-                cell.OnlyNumerics = false;
-                cell.OnlyLetters = true;
+        //        cell.MustBeUnique = true;
+        //        cell.AllowNull = false;
+        //        cell.MustBeInteger = true;
+        //    }
+        //    if (cell.Type.Equals("Name"))
+        //    {
+        //        cell.OnlyNumerics = false;
+        //        cell.OnlyLetters = true;
 
-                cell.AllMustLower = false;
-                cell.AllMustUpper = false;
+        //        cell.AllMustLower = false;
+        //        cell.AllMustUpper = false;
 
-                cell.AllowNumerics = false;
-                cell.AllowSpace = true;
-                cell.AllowSpecialCharacters = false;
+        //        cell.AllowNumerics = false;
+        //        cell.AllowSpace = true;
+        //        cell.AllowSpecialCharacters = false;
 
-                cell.MustBeUnique = false;
-                cell.AllowNull = false;
-                cell.MustBeInteger = false;
-            }
+        //        cell.MustBeUnique = false;
+        //        cell.AllowNull = false;
+        //        cell.MustBeInteger = false;
+        //    }
 
-        }
+        //}
 
         private void typesToolStripMenuItem_Click(object sender, EventArgs e)
         {
