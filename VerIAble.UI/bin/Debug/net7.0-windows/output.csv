@@ -1,0 +1,9 @@
+Type,Description,MustBeUnique,AllowNull,MaxLenght,MinLenght,TotalLenght,OnlyLetters,OnlyNumerics,AllowNumerics,AllowSpecialCharacters,AllowSpace,MustBeInteger,MustBeDecimal,AllMustUpper,AllMustLower,MustStartsWith,MustEndsWith,AllowedValues,MustSameWith,Pattern
+Integer,,False,True,50,1,0,False,True,True,False,False,False,False,False,False,,,,,
+Phone Number,,True,True,50,1,10,False,True,True,False,False,True,False,False,False,,,,,
+Name,,False,True,50,1,0,True,False,False,False,True,False,False,False,False,,,,,
+String,,False,True,50,1,0,False,False,True,True,True,False,False,False,False,,,,,
+Email,,True,True,50,1,0,False,False,True,True,False,False,False,False,False,,,,,
+UID,,True,True,50,1,0,False,True,True,False,False,True,False,False,False,,,,,
+Deneme2,,False,True,50,1,0,False,False,True,True,False,False,False,False,False,,,,,
+TripleID,,True,True,50,5,0,True,False,True,True,False,False,False,False,False,,,,,

@@ -38,7 +38,10 @@ namespace VerIAble.UI.Classes
         public string MustSameWith { get; set; }
 
         public string Pattern { get; set; }
-
+        public CustomType()
+        {
+            
+        }
         public CustomType(string type)
         {
             this.Type = type;

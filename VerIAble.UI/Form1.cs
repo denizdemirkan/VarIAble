@@ -1,6 +1,9 @@
+using CsvHelper;
+using CsvHelper.Configuration;
 using FluentValidation;
 using FluentValidation.Results;
-
+using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using VerIAble.UI.Classes;
 
@@ -28,8 +31,11 @@ namespace VerIAble.UI
 
         List<ValidationResult> results = new List<ValidationResult>();
 
-        //string csvFilePath = "C:\\Users\\deniz\\OneDrive\\Masaüstü\\example_set.csv";
-        //string csvFilePath = "C:\\Users\\deniz\\OneDrive\\Masaüstü\\example.csv";
+        // Optimize
+
+        private DataGridView dataGridView;
+        DataGridViewComboBoxColumn comboBoxColumnList;
+        // Optimize
 
         public Form1()
         {
@@ -139,7 +145,7 @@ namespace VerIAble.UI
             CustomTypes.Add(emailType);
             CustomTypes.Add(uidType);
 
-
+            dataGridView = this.dataGridView1;
         }
 
         private void loadDataToolStripMenuItem_Click(object sender, EventArgs e)
@@ -199,13 +205,14 @@ namespace VerIAble.UI
                                     // Custom Types Column
                                     DataGridViewComboBoxColumn comboBoxColumn = new DataGridViewComboBoxColumn();
                                     comboBoxColumn.HeaderText = "CustomTypes";
-                                    comboBoxColumn.DataPropertyName = "Type"; // Veri baðlantýsý için CustomType sýnýfýnýn özelliði
-                                    comboBoxColumn.DataSource = CustomTypes; // ComboBox içeriði
-                                    comboBoxColumn.DisplayMember = "Type"; // Görüntülenecek metin özelliði
-                                    comboBoxColumn.ValueMember = "Type"; // Seçilen deðeri temsil eden özellik
+                                    comboBoxColumn.DataPropertyName = "Type";
+                                    comboBoxColumn.DataSource = CustomTypes;
+                                    comboBoxColumn.DisplayMember = "Type";
+                                    comboBoxColumn.ValueMember = "Type";
 
-                                    dataGridView1.Columns[1].DataPropertyName = "Type";
-                                    dataGridView1.Columns.Insert(1, comboBoxColumn);
+                                    dataGridView1.Columns.Add(comboBoxColumn);
+                                    //dataGridView1.Columns[1].DataPropertyName = "Type";
+                                    //dataGridView1.Columns.Insert(1, comboBoxColumn);
 
 
                                     // SameWith Column
@@ -217,8 +224,10 @@ namespace VerIAble.UI
                                     sameWithColumn.HeaderText = "SameWith";
                                     sameWithColumn.DataSource = headerCellValues;
 
-                                    dataGridView1.Columns[2].DataPropertyName = "MustSameWith";
-                                    dataGridView1.Columns.Insert(2, sameWithColumn);
+                                    dataGridView1.Columns.Add(sameWithColumn);
+
+                                    //dataGridView1.Columns[2].DataPropertyName = "MustSameWith";
+                                    //dataGridView1.Columns.Insert(2, sameWithColumn);
 
                                 }
                             }
@@ -352,12 +361,6 @@ namespace VerIAble.UI
             field.Type = customType.Type;
         }
 
-        private void testToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ExportImportForm exportImportForm = new ExportImportForm(CustomTypes);
-            exportImportForm.Show();
-        }
-
         private void typesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CustomTypesForm customTypesForm = new CustomTypesForm(CustomTypes);
@@ -394,6 +397,66 @@ namespace VerIAble.UI
                 }
             }
             Console.WriteLine("--------------------------------------------------------------------------");
+        }
+
+        private void exportSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string settingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                "Settings");
+
+            string csvContent = ToCsv(CustomTypes);
+
+            File.WriteAllText(Environment.CurrentDirectory + "\\output.csv", csvContent);
+            Console.WriteLine("Setting File Saved!");
+        }
+        private void importSettingsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "CSV file (*.csv)|*.csv";
+                openFileDialog.Title = "Select CSV File";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    CustomTypes = ReadCsvToCustomList(filePath);
+
+                    Console.WriteLine("CSV Loaded: " + filePath);
+                }
+            }
+        }
+        static string ToCsv<T>(IEnumerable<T> items)
+        {
+            var properties = typeof(T).GetProperties();
+            var header = string.Join(",", properties.Select(p => p.Name));
+
+            var csvLines = items.Select(item => string.Join(",", properties.Select(p => FormatCsvValue(p.GetValue(item)))));
+
+            return header + Environment.NewLine + string.Join(Environment.NewLine, csvLines);
+        }
+        static string FormatCsvValue(object value)
+        {
+            if (value == null)
+                return "";
+
+            string stringValue = value.ToString();
+            if (stringValue.Contains(',') || stringValue.Contains('"'))
+                return $"\"{stringValue.Replace("\"", "\"\"")}\"";
+            return stringValue;
+        }
+        static List<CustomType> ReadCsvToCustomList(string filePath)
+        {
+            using (var reader = new StreamReader(filePath))
+            using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)))
+            {
+                Console.WriteLine(csv.ColumnCount);
+                return csv.GetRecords<CustomType>().ToList();
+            }
+        }
+
+        private void statisticsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 

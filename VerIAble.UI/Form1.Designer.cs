@@ -39,6 +39,7 @@
             testToolStripMenuItem = new ToolStripMenuItem();
             importSettingsToolStripMenuItem1 = new ToolStripMenuItem();
             exportSettingsToolStripMenuItem = new ToolStripMenuItem();
+            statisticsToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             menuStrip1.SuspendLayout();
             SuspendLayout();
@@ -67,7 +68,7 @@
             // 
             // toolStripMenuItem1
             // 
-            toolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { loadDataToolStripMenuItem, calculateViolationsToolStripMenuItem, typesToolStripMenuItem, testToolStripMenuItem });
+            toolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { loadDataToolStripMenuItem, calculateViolationsToolStripMenuItem, typesToolStripMenuItem, testToolStripMenuItem, statisticsToolStripMenuItem });
             toolStripMenuItem1.Name = "toolStripMenuItem1";
             toolStripMenuItem1.Size = new Size(60, 24);
             toolStripMenuItem1.Text = "Menu";
@@ -89,14 +90,14 @@
             // consoleToolStripMenuItem
             // 
             consoleToolStripMenuItem.Name = "consoleToolStripMenuItem";
-            consoleToolStripMenuItem.Size = new Size(224, 26);
+            consoleToolStripMenuItem.Size = new Size(194, 26);
             consoleToolStripMenuItem.Text = "See on Console";
             consoleToolStripMenuItem.Click += consoleToolStripMenuItem_Click;
             // 
             // createPDFToolStripMenuItem
             // 
             createPDFToolStripMenuItem.Name = "createPDFToolStripMenuItem";
-            createPDFToolStripMenuItem.Size = new Size(224, 26);
+            createPDFToolStripMenuItem.Size = new Size(194, 26);
             createPDFToolStripMenuItem.Text = "Create PDF";
             // 
             // typesToolStripMenuItem
@@ -112,19 +113,27 @@
             testToolStripMenuItem.Name = "testToolStripMenuItem";
             testToolStripMenuItem.Size = new Size(224, 26);
             testToolStripMenuItem.Text = "Import/Export Tool";
-            testToolStripMenuItem.Click += testToolStripMenuItem_Click;
             // 
             // importSettingsToolStripMenuItem1
             // 
             importSettingsToolStripMenuItem1.Name = "importSettingsToolStripMenuItem1";
             importSettingsToolStripMenuItem1.Size = new Size(194, 26);
             importSettingsToolStripMenuItem1.Text = "Import Settings";
+            importSettingsToolStripMenuItem1.Click += importSettingsToolStripMenuItem1_Click;
             // 
             // exportSettingsToolStripMenuItem
             // 
             exportSettingsToolStripMenuItem.Name = "exportSettingsToolStripMenuItem";
             exportSettingsToolStripMenuItem.Size = new Size(194, 26);
             exportSettingsToolStripMenuItem.Text = "Export Settings";
+            exportSettingsToolStripMenuItem.Click += exportSettingsToolStripMenuItem_Click;
+            // 
+            // statisticsToolStripMenuItem
+            // 
+            statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
+            statisticsToolStripMenuItem.Size = new Size(224, 26);
+            statisticsToolStripMenuItem.Text = "Statistics";
+            statisticsToolStripMenuItem.Click += statisticsToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -157,5 +166,6 @@
         private ToolStripMenuItem importSettingsToolStripMenuItem1;
         private ToolStripMenuItem exportSettingsToolStripMenuItem;
         private ToolStripMenuItem createPDFToolStripMenuItem;
+        private ToolStripMenuItem statisticsToolStripMenuItem;
     }
 }
