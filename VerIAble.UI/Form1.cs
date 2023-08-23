@@ -372,7 +372,8 @@ namespace VerIAble.UI
             InputDialog inputDialog = new InputDialog();
             DialogResult csvFileName = inputDialog.ShowDialog();
 
-            if(csvFileName != DialogResult.OK)
+            Console.WriteLine(inputDialog.FileName);
+            if (csvFileName == DialogResult.OK)
             {
                 string settingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
     "Settings");
@@ -381,6 +382,7 @@ namespace VerIAble.UI
 
                 File.WriteAllText(Environment.CurrentDirectory + "\\"+inputDialog.FileName+".csv", csvContent);
 
+                Console.WriteLine("Export File: " + Environment.CurrentDirectory + "\\" + inputDialog.FileName + ".csv");
             }
 
 
@@ -399,6 +401,7 @@ namespace VerIAble.UI
 
                     MessageBox.Show("Settings Imported!", "Import Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+                    Console.WriteLine("Import File: "+filePath);
                 }
             }
         }
