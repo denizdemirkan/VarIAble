@@ -1,8 +1,10 @@
+using CsvHelper;
+using CsvHelper.Configuration;
 using FluentValidation;
 using FluentValidation.Results;
-
+using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
-
 using VerIAble.UI.Classes;
 
 namespace VerIAble.UI
@@ -21,30 +23,21 @@ namespace VerIAble.UI
 
         List<Data> CellDatas = new List<Data>();
 
-        List<string> Types = new List<string>();
-
         List<string> headerCellValues = new List<string>();
 
         List<CustomType> CustomTypes = new List<CustomType>();
 
         List<ValidationResult> results = new List<ValidationResult>();
 
-        string csvFilePath = "C:\\Users\\deniz\\OneDrive\\Masaüstü\\example_set.csv";
-        //string csvFilePath = "C:\\Users\\deniz\\OneDrive\\Masaüstü\\example.csv";
+        // Optimize
+        private DataGridView dataGridView;
+        DataGridViewComboBoxColumn comboBoxColumnList;
+        // Optimize
 
         public Form1()
         {
             InitializeComponent();
             AllocConsole();
-
-            Types.Add("Integer");
-            Types.Add("Decimal");
-            Types.Add("String");
-            Types.Add("Email");
-            Types.Add("Date");
-            Types.Add("UID");
-            Types.Add("Phone Number");
-            Types.Add("Name");
 
             CustomType integerType = new CustomType("Integer")
             {
@@ -139,107 +132,99 @@ namespace VerIAble.UI
             CustomTypes.Add(stringType);
             CustomTypes.Add(emailType);
             CustomTypes.Add(uidType);
-
-
         }
-        
 
         private void loadDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Start Reading
-            using (StreamReader reader = new StreamReader(csvFilePath))
+            DialogResult result = MessageBox.Show("Are you sure to load CSV file? Your unsaved changes will be LOST!", "Load File", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
             {
-                int lineCount = 1;
-                int indexCount = 0;
-                while (!reader.EndOfStream)
+                using (CsvSeperatorQuestionForm seperatorQuestion = new CsvSeperatorQuestionForm())
                 {
-
-                    string line = reader.ReadLine();
-                    string[] cells = line.Split(',');
-
-                    foreach (string cell in cells)
+                    if (seperatorQuestion.ShowDialog() == DialogResult.OK)
                     {
-                        if (lineCount == 1)
                         {
-                            Field newHeader = new Field();
-                            newHeader.Value = cell;
-                            Headers.Add(newHeader);
+                            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                            {
+                                openFileDialog.Filter = "CSV file (*.csv)|*.csv";
+                                openFileDialog.Title = "Select CSV File";
 
-                            // Headers loaded
-                        }
-                        else
-                        {
-                            Data newData = new Data();
-                            newData.Value = cell;
-                            newData.CsvIndex = indexCount;
-                            CellDatas.Add(newData);
-                            indexCount++;
-                            // Data cells loaded
+                                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                                {
+                                    using (StreamReader reader = new StreamReader(openFileDialog.FileName))
+                                    {
+                                        int lineCount = 1;
+                                        int indexCount = 0;
+                                        while (!reader.EndOfStream)
+                                        {
+
+                                            string line = reader.ReadLine();
+                                            string[] cells = line.Split(seperatorQuestion.SelectedOption);
+
+                                            foreach (string cell in cells)
+                                            {
+                                                if (lineCount == 1)
+                                                {
+                                                    Field newHeader = new Field();
+                                                    newHeader.Value = cell;
+                                                    Headers.Add(newHeader);
+
+                                                    // Headers loaded
+                                                }
+                                                else
+                                                {
+                                                    Data newData = new Data();
+                                                    newData.Value = cell;
+                                                    newData.CsvIndex = indexCount;
+                                                    CellDatas.Add(newData);
+                                                    indexCount++;
+                                                    // Data cells loaded
+                                                }
+                                            }
+                                            lineCount++;
+                                        }
+
+                                    }
+                                    dataGridView1.DataSource = Headers;
+
+                                    // Custom Types Column
+                                    DataGridViewComboBoxColumn comboBoxColumn = new DataGridViewComboBoxColumn();
+                                    comboBoxColumn.HeaderText = "CustomTypes";
+                                    comboBoxColumn.DataPropertyName = "Type";
+                                    comboBoxColumn.DataSource = CustomTypes;
+                                    comboBoxColumn.DisplayMember = "Type";
+                                    comboBoxColumn.ValueMember = "Type";
+
+                                    dataGridView1.Columns.Add(comboBoxColumn);
+                                    //dataGridView1.Columns[1].DataPropertyName = "Type";
+                                    //dataGridView1.Columns.Insert(1, comboBoxColumn);
+
+
+                                    // SameWith Column
+                                    foreach (Field header in Headers)
+                                    {
+                                        headerCellValues.Add(header.Value);
+                                    }
+                                    DataGridViewComboBoxColumn sameWithColumn = new DataGridViewComboBoxColumn();
+                                    sameWithColumn.HeaderText = "SameWith";
+                                    sameWithColumn.DataSource = headerCellValues;
+
+                                    dataGridView1.Columns.Add(sameWithColumn);
+
+                                    //dataGridView1.Columns[2].DataPropertyName = "MustSameWith";
+                                    //dataGridView1.Columns.Insert(2, sameWithColumn);
+
+                                }
+                            }
                         }
                     }
-                    lineCount++;
                 }
-
             }
-            dataGridView1.DataSource = Headers;
-            
-            // Type Column for Default Settings
-            //DataGridViewComboBoxColumn typeColumn = new DataGridViewComboBoxColumn();
-            //typeColumn.HeaderText = "Type";
-            //typeColumn.DataSource = Types;
-            //dataGridView1.Columns[1].DataPropertyName = "Type";
-            //dataGridView1.Columns.Insert(1, typeColumn);
-
-            // Custom Types Column
-            DataGridViewComboBoxColumn comboBoxColumn = new DataGridViewComboBoxColumn();
-            comboBoxColumn.HeaderText = "CustomTypes";
-            comboBoxColumn.DataPropertyName = "Type"; // Veri baðlantýsý için CustomType sýnýfýnýn özelliði
-            comboBoxColumn.DataSource = CustomTypes; // ComboBox içeriði
-            comboBoxColumn.DisplayMember = "Type"; // Görüntülenecek metin özelliði
-            comboBoxColumn.ValueMember = "Type"; // Seçilen deðeri temsil eden özellik
-
-            dataGridView1.Columns[1].DataPropertyName = "Type";
-            dataGridView1.Columns.Insert(1, comboBoxColumn);
-
-
-            // SameWith Column
-            foreach (Field header in Headers)
-            {
-                headerCellValues.Add(header.Value);
-            }
-            DataGridViewComboBoxColumn sameWithColumn = new DataGridViewComboBoxColumn();
-            sameWithColumn.HeaderText = "SameWith";
-            sameWithColumn.DataSource = headerCellValues;
-
-            dataGridView1.Columns[2].DataPropertyName = "MustSameWith";
-            dataGridView1.Columns.Insert(2, sameWithColumn);
-
-
-            //// DataGridView'e verileri yükleme
-            //dataGridView1.DataSource = CustomTypes;
         }
 
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            // On Type Change
-            //if (e.ColumnIndex == 1 && e.RowIndex >= 0)
-            //{
-            //    DataGridViewComboBoxCell comboBoxCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex] as DataGridViewComboBoxCell;
-            //    if (comboBoxCell != null)
-            //    {
-            //        int rowNumber = e.RowIndex;
-
-            //        string selectedValue = comboBoxCell.Value.ToString();
-
-            //        Headers.ElementAt(rowNumber).Type = selectedValue;
-
-            //        TypeDefaults(Headers.ElementAt(rowNumber));
-
-            //        dataGridView1.Invalidate();
-            //        dataGridView1.Update();
-            //    }
-            //}
-
             // On CustomType Change
             if (e.ColumnIndex == 1 && e.RowIndex >= 0)
             {
@@ -252,7 +237,7 @@ namespace VerIAble.UI
 
                     Headers.ElementAt(rowNumber).Type = selectedValue;
 
-                    //TypeDefaults(Headers.ElementAt(rowNumber));
+                    
                     foreach (CustomType ct in CustomTypes)
                     {
                         if (ct.Type.Equals(selectedValue))
@@ -280,36 +265,6 @@ namespace VerIAble.UI
 
                     dataGridView1.Invalidate();
                     dataGridView1.Update();
-                }
-            }
-
-        }
-
-        private void calculateViolationsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            foreach (Data data in CellDatas)
-            {
-                ApplyRules(Headers.ElementAt(data.CsvIndex % Headers.Count), data);
-                // Data rules Applied
-            }
-
-
-            foreach (Data data in CellDatas)
-            {
-                DataValidator validator = new DataValidator(data, this.Headers, this.CellDatas, this.headerCellValues);
-                ValidationResult result = validator.Validate(data);
-                if (!result.IsValid)
-                {
-                    results.Add(result);
-                }
-            }
-
-            // Loop over all failures
-            foreach (ValidationResult validationResult in results)
-            {
-                foreach (ValidationFailure failure in validationResult.Errors)
-                {
-                    Console.WriteLine(failure.ErrorMessage);
                 }
             }
 
@@ -344,6 +299,7 @@ namespace VerIAble.UI
             data.Type = header.Type;
         }
 
+        // Called After Calcultion
         private void ApplyRulesToField(Field field, CustomType customType)
         {
             field.AllMustLower = customType.AllMustLower;
@@ -373,108 +329,130 @@ namespace VerIAble.UI
             field.Type = customType.Type;
         }
 
-        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        private void typesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CustomTypesForm customTypesForm = new CustomTypesForm(CustomTypes, this);
+            customTypesForm.Show();
+        }
+
+        private void consoleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            results.Clear();
+            Console.WriteLine("--------------------------------------------------------------------------");
+
+            foreach (Data data in CellDatas)
+            {
+                ApplyRules(Headers.ElementAt(data.CsvIndex % Headers.Count), data);
+                // Data rules Applied
+            }
+
+            foreach (Data data in CellDatas)
+            {
+                DataValidator validator = new DataValidator(data, this.Headers, this.CellDatas, this.headerCellValues);
+                ValidationResult result = validator.Validate(data);
+                if (!result.IsValid)
+                {
+                    results.Add(result);
+                }
+            }
+
+            // Loop over all failures
+            foreach (ValidationResult validationResult in results)
+            {
+                foreach (ValidationFailure failure in validationResult.Errors)
+                {
+                    Console.WriteLine(failure.ErrorMessage);
+                }
+            }
+            Console.WriteLine("--------------------------------------------------------------------------");
+        }
+
+        private void exportSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InputDialog inputDialog = new InputDialog();
+            DialogResult csvFileName = inputDialog.ShowDialog();
+
+            if(csvFileName != DialogResult.OK)
+            {
+                string settingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+    "Settings");
+
+                string csvContent = ToCsv(CustomTypes);
+
+                File.WriteAllText(Environment.CurrentDirectory + "\\"+inputDialog.FileName+".csv", csvContent);
+
+            }
+
+
+        }
+        private void importSettingsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "CSV file (*.csv)|*.csv";
+                openFileDialog.Title = "Select CSV File";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    CustomTypes = ReadCsvToCustomList(filePath);
+
+                    MessageBox.Show("Settings Imported!", "Import Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                }
+            }
+        }
+
+        // Together
+        static string ToCsv<T>(IEnumerable<T> items)
+        {
+            var properties = typeof(T).GetProperties();
+            var header = string.Join(",", properties.Select(p => p.Name));
+
+            var csvLines = items.Select(item => string.Join(",", properties.Select(p => FormatCsvValue(p.GetValue(item)))));
+
+            return header + Environment.NewLine + string.Join(Environment.NewLine, csvLines);
+        }
+        static string FormatCsvValue(object value)
+        {
+            if (value == null)
+                return "";
+
+            string stringValue = value.ToString();
+            if (stringValue.Contains(',') || stringValue.Contains('"'))
+                return $"\"{stringValue.Replace("\"", "\"\"")}\"";
+            return stringValue;
+        }
+        // Together
+
+        // Make Here Optimization
+        static List<CustomType> ReadCsvToCustomList(string filePath)
+        {
+            using (var reader = new StreamReader(filePath))
+            using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)))
+            {
+                return csv.GetRecords<CustomType>().ToList();
+            }
+        }
+
+        private void statisticsToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
 
-        //private void TypeDefaults(Field cell)
-        //{
-        //    if (cell.Type.Equals("Integer"))
-        //    {
-        //        cell.OnlyNumerics = true;
-        //        cell.OnlyLetters = false;
-
-        //        cell.AllMustLower = false;
-        //        cell.AllMustUpper = false;
-
-        //        cell.AllowNumerics = true;
-        //        cell.AllowSpace = false;
-        //        cell.AllowSpecialCharacters = false;
-
-        //    }
-        //    if (cell.Type.Equals("String"))
-        //    {
-        //        cell.OnlyNumerics = false;
-        //        cell.OnlyLetters = false;
-
-        //        cell.AllMustLower = false;
-        //        cell.AllMustUpper = false;
-
-        //        cell.AllowNumerics = true;
-        //        cell.AllowSpace = true;
-        //        cell.AllowSpecialCharacters = true;
-        //    }
-        //    if (cell.Type.Equals("Email"))
-        //    {
-        //        cell.OnlyNumerics = false;
-        //        cell.OnlyLetters = false;
-
-        //        cell.AllMustLower = false;
-        //        cell.AllMustUpper = false;
-
-        //        cell.MustBeUnique = true;
-        //        cell.AllowNumerics = true;
-        //        cell.AllowSpace = false;
-        //        cell.AllowSpecialCharacters = true;
-        //    }
-        //    if (cell.Type.Equals("UID"))
-        //    {
-        //        cell.OnlyNumerics = true;
-        //        cell.OnlyLetters = false;
-
-        //        cell.AllMustLower = false;
-        //        cell.AllMustUpper = false;
-
-        //        cell.AllowNumerics = true;
-        //        cell.AllowSpace = false;
-        //        cell.AllowSpecialCharacters = false;
-
-        //        cell.MustBeUnique = true;
-        //        cell.AllowNull = false;
-        //        cell.MustBeInteger = true;
-        //    }
-        //    if (cell.Type.Equals("Phone Number"))
-        //    {
-        //        cell.TotalLenght = 10;
-
-        //        cell.OnlyNumerics = true;
-        //        cell.OnlyLetters = false;
-
-        //        cell.AllMustLower = false;
-        //        cell.AllMustUpper = false;
-
-        //        cell.AllowNumerics = true;
-        //        cell.AllowSpace = false;
-        //        cell.AllowSpecialCharacters = false;
-
-        //        cell.MustBeUnique = true;
-        //        cell.AllowNull = false;
-        //        cell.MustBeInteger = true;
-        //    }
-        //    if (cell.Type.Equals("Name"))
-        //    {
-        //        cell.OnlyNumerics = false;
-        //        cell.OnlyLetters = true;
-
-        //        cell.AllMustLower = false;
-        //        cell.AllMustUpper = false;
-
-        //        cell.AllowNumerics = false;
-        //        cell.AllowSpace = true;
-        //        cell.AllowSpecialCharacters = false;
-
-        //        cell.MustBeUnique = false;
-        //        cell.AllowNull = false;
-        //        cell.MustBeInteger = false;
-        //    }
-
-        //}
-
-        private void typesToolStripMenuItem_Click(object sender, EventArgs e)
+        // Saves Changes on CustomTypes to Fields when clicked Save Changes Button in CustomTypeForm
+        public void saveChanges()
         {
-            CustomTypesForm customTypesForm = new CustomTypesForm(CustomTypes);
-            customTypesForm.Show();
+            foreach(CustomType customType in CustomTypes)
+            {
+                foreach(Field field in Headers)
+                {
+                    if (field.Type.Equals(customType.Type))
+                    {
+                        ApplyRulesToField(field, customType);
+                    }
+                }
+            }
         }
     }
 
@@ -524,7 +502,7 @@ namespace VerIAble.UI
                 RuleFor(x => x.Value).MinimumLength(data.MinLenght).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Length must be GREATER: " + data.MinLenght + " // Violation with: " + data.Value));
                 RuleFor(x => x.Value).MaximumLength(data.MaxLenght).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Length must be LESS: " + data.MaxLenght + " // Violation with: " + data.Value));
             }
-            if (data.MustSameWith != null)
+            if (data.MustSameWith != "" && data.MustSameWith != null)
             {
                 RuleFor(x => x).Must(IsSameWith).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Mus same with: " + data.MustSameWith));
             }
@@ -537,7 +515,6 @@ namespace VerIAble.UI
                 RuleFor(x => x.Value).Must(AllUpper).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Must be UPPER CASE: " + data.Value));
             }
         }
-
         private string ViolationMessage(int row, int column, string Message)
         {
             return "There is violation in ROW: " + row.ToString() + " & COLUMN: " + column.ToString() + " " + Message;
@@ -596,6 +573,5 @@ namespace VerIAble.UI
 
             return data.Value.Equals(sameValue);
         }
-
     }
 }
