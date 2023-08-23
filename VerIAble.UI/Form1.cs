@@ -23,8 +23,6 @@ namespace VerIAble.UI
 
         List<Data> CellDatas = new List<Data>();
 
-        List<string> Types = new List<string>();
-
         List<string> headerCellValues = new List<string>();
 
         List<CustomType> CustomTypes = new List<CustomType>();
@@ -32,7 +30,6 @@ namespace VerIAble.UI
         List<ValidationResult> results = new List<ValidationResult>();
 
         // Optimize
-
         private DataGridView dataGridView;
         DataGridViewComboBoxColumn comboBoxColumnList;
         // Optimize
@@ -41,15 +38,6 @@ namespace VerIAble.UI
         {
             InitializeComponent();
             AllocConsole();
-
-            Types.Add("Integer");
-            Types.Add("Decimal");
-            Types.Add("String");
-            Types.Add("Email");
-            Types.Add("Date");
-            Types.Add("UID");
-            Types.Add("Phone Number");
-            Types.Add("Name");
 
             CustomType integerType = new CustomType("Integer")
             {
@@ -144,8 +132,6 @@ namespace VerIAble.UI
             CustomTypes.Add(stringType);
             CustomTypes.Add(emailType);
             CustomTypes.Add(uidType);
-
-            dataGridView = this.dataGridView1;
         }
 
         private void loadDataToolStripMenuItem_Click(object sender, EventArgs e)
@@ -332,6 +318,7 @@ namespace VerIAble.UI
             data.Type = header.Type;
         }
 
+        // Called After Calcultion
         private void ApplyRulesToField(Field field, CustomType customType)
         {
             field.AllMustLower = customType.AllMustLower;
@@ -425,6 +412,8 @@ namespace VerIAble.UI
                 }
             }
         }
+
+        // Together
         static string ToCsv<T>(IEnumerable<T> items)
         {
             var properties = typeof(T).GetProperties();
@@ -444,12 +433,14 @@ namespace VerIAble.UI
                 return $"\"{stringValue.Replace("\"", "\"\"")}\"";
             return stringValue;
         }
+        // Together
+
+        // Optimize
         static List<CustomType> ReadCsvToCustomList(string filePath)
         {
             using (var reader = new StreamReader(filePath))
             using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)))
             {
-                Console.WriteLine(csv.ColumnCount);
                 return csv.GetRecords<CustomType>().ToList();
             }
         }
