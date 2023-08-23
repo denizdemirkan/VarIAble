@@ -225,25 +225,6 @@ namespace VerIAble.UI
 
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            // On Type Change
-            //if (e.ColumnIndex == 1 && e.RowIndex >= 0)
-            //{
-            //    DataGridViewComboBoxCell comboBoxCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex] as DataGridViewComboBoxCell;
-            //    if (comboBoxCell != null)
-            //    {
-            //        int rowNumber = e.RowIndex;
-
-            //        string selectedValue = comboBoxCell.Value.ToString();
-
-            //        Headers.ElementAt(rowNumber).Type = selectedValue;
-
-            //        TypeDefaults(Headers.ElementAt(rowNumber));
-
-            //        dataGridView1.Invalidate();
-            //        dataGridView1.Update();
-            //    }
-            //}
-
             // On CustomType Change
             if (e.ColumnIndex == 1 && e.RowIndex >= 0)
             {
@@ -256,7 +237,7 @@ namespace VerIAble.UI
 
                     Headers.ElementAt(rowNumber).Type = selectedValue;
 
-                    //TypeDefaults(Headers.ElementAt(rowNumber));
+                    
                     foreach (CustomType ct in CustomTypes)
                     {
                         if (ct.Type.Equals(selectedValue))
@@ -350,7 +331,7 @@ namespace VerIAble.UI
 
         private void typesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CustomTypesForm customTypesForm = new CustomTypesForm(CustomTypes);
+            CustomTypesForm customTypesForm = new CustomTypesForm(CustomTypes, this);
             customTypesForm.Show();
         }
 
@@ -388,13 +369,21 @@ namespace VerIAble.UI
 
         private void exportSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string settingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                "Settings");
+            InputDialog inputDialog = new InputDialog();
+            DialogResult csvFileName = inputDialog.ShowDialog();
 
-            string csvContent = ToCsv(CustomTypes);
+            if(csvFileName != DialogResult.OK)
+            {
+                string settingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+    "Settings");
 
-            File.WriteAllText(Environment.CurrentDirectory + "\\output.csv", csvContent);
-            Console.WriteLine("Setting File Saved!");
+                string csvContent = ToCsv(CustomTypes);
+
+                File.WriteAllText(Environment.CurrentDirectory + "\\"+inputDialog.FileName+".csv", csvContent);
+
+            }
+
+
         }
         private void importSettingsToolStripMenuItem1_Click(object sender, EventArgs e)
         {
@@ -408,7 +397,8 @@ namespace VerIAble.UI
                     string filePath = openFileDialog.FileName;
                     CustomTypes = ReadCsvToCustomList(filePath);
 
-                    Console.WriteLine("CSV Loaded: " + filePath);
+                    MessageBox.Show("Settings Imported!", "Import Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                 }
             }
         }
@@ -435,7 +425,7 @@ namespace VerIAble.UI
         }
         // Together
 
-        // Optimize
+        // Make Here Optimization
         static List<CustomType> ReadCsvToCustomList(string filePath)
         {
             using (var reader = new StreamReader(filePath))
@@ -448,6 +438,21 @@ namespace VerIAble.UI
         private void statisticsToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+        }
+
+        // Saves Changes on CustomTypes to Fields when clicked Save Changes Button in CustomTypeForm
+        public void saveChanges()
+        {
+            foreach(CustomType customType in CustomTypes)
+            {
+                foreach(Field field in Headers)
+                {
+                    if (field.Type.Equals(customType.Type))
+                    {
+                        ApplyRulesToField(field, customType);
+                    }
+                }
+            }
         }
     }
 
@@ -497,7 +502,7 @@ namespace VerIAble.UI
                 RuleFor(x => x.Value).MinimumLength(data.MinLenght).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Length must be GREATER: " + data.MinLenght + " // Violation with: " + data.Value));
                 RuleFor(x => x.Value).MaximumLength(data.MaxLenght).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Length must be LESS: " + data.MaxLenght + " // Violation with: " + data.Value));
             }
-            if (data.MustSameWith != null)
+            if (data.MustSameWith != "" && data.MustSameWith != null)
             {
                 RuleFor(x => x).Must(IsSameWith).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Mus same with: " + data.MustSameWith));
             }

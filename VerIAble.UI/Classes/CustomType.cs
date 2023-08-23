@@ -63,7 +63,6 @@ namespace VerIAble.UI.Classes
             this.AllowSpecialCharacters = true;
             this.AllowSpace = false;
             this.AllowNull = true;
-
         }
     }
 }

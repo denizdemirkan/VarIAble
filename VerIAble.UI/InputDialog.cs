@@ -10,7 +10,10 @@ namespace VerIAble.UI
     {
         private TextBox userInputTextBox;
         private Button okButton;
+        private Label label1;
         private Button cancelButton;
+
+        public string FileName { get; set; }
 
         public InputDialog()
         {
@@ -19,37 +22,81 @@ namespace VerIAble.UI
 
         private void InitializeComponent()
         {
-            Text = "Değer Girişi";
-            Width = 300;
-            Height = 150;
-
             userInputTextBox = new TextBox();
-            userInputTextBox.Width = 200;
-            userInputTextBox.Location = new System.Drawing.Point(50, 50);
-            Controls.Add(userInputTextBox);
-
             okButton = new Button();
-            okButton.Text = "Tamam";
-            okButton.Location = new System.Drawing.Point(50, 100);
-            okButton.Click += OkButton_Click;
-            Controls.Add(okButton);
-
             cancelButton = new Button();
-            cancelButton.Text = "İptal";
-            cancelButton.Location = new System.Drawing.Point(150, 100);
+            label1 = new Label();
+            SuspendLayout();
+            // 
+            // userInputTextBox
+            // 
+            userInputTextBox.Location = new Point(42, 46);
+            userInputTextBox.Name = "userInputTextBox";
+            userInputTextBox.Size = new Size(200, 27);
+            userInputTextBox.TabIndex = 0;
+            // 
+            // okButton
+            // 
+            okButton.Location = new Point(42, 96);
+            okButton.Name = "okButton";
+            okButton.Size = new Size(94, 31);
+            okButton.TabIndex = 1;
+            okButton.Text = "Export";
+            okButton.Click += OkButton_Click;
+            // 
+            // cancelButton
+            // 
+            cancelButton.Location = new Point(142, 96);
+            cancelButton.Name = "cancelButton";
+            cancelButton.Size = new Size(100, 31);
+            cancelButton.TabIndex = 2;
+            cancelButton.Text = "Cancel";
             cancelButton.Click += CancelButton_Click;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(84, 19);
+            label1.Name = "label1";
+            label1.Size = new Size(111, 20);
+            label1.TabIndex = 3;
+            label1.Text = "Save File Name";
+            // 
+            // InputDialog
+            // 
+            ClientSize = new Size(289, 143);
+            Controls.Add(label1);
+            Controls.Add(userInputTextBox);
+            Controls.Add(okButton);
             Controls.Add(cancelButton);
+            Name = "InputDialog";
+            Text = "Export File Name";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         private void OkButton_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.OK;
-            Close();
+            FileName = userInputTextBox.Text;
+            if (FileName != null || FileName != "")
+            {
+                DialogResult = DialogResult.OK;
+                MessageBox.Show("Settings Exported!", "Export Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Close();
+            }
+            else
+            {
+                DialogResult = DialogResult.Cancel;
+                MessageBox.Show("Not a Valid Name!", "Export Canceled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Close();
+            }
+
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            MessageBox.Show("Export Canceled", "Export Canceled", MessageBoxButtons.OK, MessageBoxIcon.Information);
             Close();
         }
 
