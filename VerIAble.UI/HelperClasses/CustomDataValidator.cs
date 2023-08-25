@@ -22,11 +22,6 @@ namespace VerIAble.UI.HelperClasses
             int rawNumberOfData = data.CsvIndex / headers.Count + 2;
             int columnNumberOfData = data.CsvIndex % headers.Count + 1;
 
-            //if (data.Type.Equals("Email")) // Develop This for default settings
-            //{
-            //    RuleFor(x => x.Value).EmailAddress().WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Invalid EMAIL Format!" + "// Violation with: " + data.Value));
-            //}
-
             // if value is null & AllowNull is false, there is no need for other rules.
             if (!data.AllowNull)
             {
