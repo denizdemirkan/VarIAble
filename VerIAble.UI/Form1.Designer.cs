@@ -76,7 +76,7 @@
             // loadDataToolStripMenuItem
             // 
             loadDataToolStripMenuItem.Name = "loadDataToolStripMenuItem";
-            loadDataToolStripMenuItem.Size = new Size(224, 26);
+            loadDataToolStripMenuItem.Size = new Size(223, 26);
             loadDataToolStripMenuItem.Text = "Load Data";
             loadDataToolStripMenuItem.Click += loadDataToolStripMenuItem_Click;
             // 
@@ -84,7 +84,7 @@
             // 
             calculateViolationsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { consoleToolStripMenuItem, createPDFToolStripMenuItem });
             calculateViolationsToolStripMenuItem.Name = "calculateViolationsToolStripMenuItem";
-            calculateViolationsToolStripMenuItem.Size = new Size(224, 26);
+            calculateViolationsToolStripMenuItem.Size = new Size(223, 26);
             calculateViolationsToolStripMenuItem.Text = "Calculate Violations";
             // 
             // consoleToolStripMenuItem
@@ -103,7 +103,7 @@
             // typesToolStripMenuItem
             // 
             typesToolStripMenuItem.Name = "typesToolStripMenuItem";
-            typesToolStripMenuItem.Size = new Size(224, 26);
+            typesToolStripMenuItem.Size = new Size(223, 26);
             typesToolStripMenuItem.Text = "Custom Types";
             typesToolStripMenuItem.Click += typesToolStripMenuItem_Click;
             // 
@@ -111,7 +111,7 @@
             // 
             testToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { importSettingsToolStripMenuItem1, exportSettingsToolStripMenuItem });
             testToolStripMenuItem.Name = "testToolStripMenuItem";
-            testToolStripMenuItem.Size = new Size(224, 26);
+            testToolStripMenuItem.Size = new Size(223, 26);
             testToolStripMenuItem.Text = "Import/Export Tool";
             // 
             // importSettingsToolStripMenuItem1
@@ -131,7 +131,7 @@
             // statisticsToolStripMenuItem
             // 
             statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
-            statisticsToolStripMenuItem.Size = new Size(224, 26);
+            statisticsToolStripMenuItem.Size = new Size(223, 26);
             statisticsToolStripMenuItem.Text = "Statistics";
             statisticsToolStripMenuItem.Click += statisticsToolStripMenuItem_Click;
             // 

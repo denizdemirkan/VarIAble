@@ -7,46 +7,27 @@ using System.Threading.Tasks;
 
 namespace VerIAble.UI.Classes
 {
-    public class CustomType
+    public class CustomType : AbstractData
     {
-        public string Type { get; set; }
-        public string Description { get; set; }
-        public bool MustBeUnique { get; set; }
-        public bool AllowNull { get; set; }
-        public int MaxLenght { get; set; }
-        public int MinLenght { get; set; }
-        public int TotalLenght { get; set; }
 
-        public bool OnlyLetters { get; set; }
-        public bool OnlyNumerics { get; set; }
+        // Add this Annotation to Hide Fields in Data Grid Views
 
-        public bool AllowNumerics { get; set; }
-        public bool AllowSpecialCharacters { get; set; }
-        public bool AllowSpace { get; set; }
-
-        public bool MustBeInteger { get; set; }
-        public bool MustBeDecimal { get; set; }
-
-        public bool AllMustUpper { get; set; }
-        public bool AllMustLower { get; set; }
-
-        public string MustStartsWith { get; set; }
-        public string MustEndsWith { get; set; }
-        public string AllowedValues { get; set; }
+        [Browsable(false)]
+        public string Value { get; set; }
 
         [Browsable(false)]
         public string MustSameWith { get; set; }
 
-        public string Pattern { get; set; }
         public CustomType()
         {
             
         }
         public CustomType(string type)
         {
+            // These are defaults
             this.Type = type;
-            this.MaxLenght = 50;
-            this.MinLenght = 1;
+            this.MaxLenght = 100;
+            this.MinLenght = 0;
             this.TotalLenght = 0;
 
             this.AllMustLower = false;
@@ -63,6 +44,34 @@ namespace VerIAble.UI.Classes
             this.AllowSpecialCharacters = true;
             this.AllowSpace = false;
             this.AllowNull = true;
+        }
+
+        // Rules on Fields Change  && Bug -> priotizing of the called function matters.
+
+        //public void SaveOnChange()
+        //{
+        //    ChangeOnOnlyLetters();
+        //    ChangeOnOnlyNumerics();
+        //}
+        public void ChangeOnOnlyNumerics()
+        {
+            if (this.OnlyNumerics)
+            {
+                AllowNumerics = true;
+                OnlyLetters = false;
+                AllowSpace = false;
+                AllowSpecialCharacters = false;
+            }
+        }
+        public void ChangeOnOnlyLetters()
+        {
+            if (this.OnlyLetters)
+            {
+                AllowNumerics = false;
+                OnlyNumerics = false;
+                AllowSpace = false;
+                AllowSpecialCharacters = false;
+            }
         }
     }
 }

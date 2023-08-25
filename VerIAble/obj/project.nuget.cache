@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "dqhCZw8UHsiO+jiga7Arekm7V3fkiv75Ezua3bEYJai8FuH0RQNd39yf+nKDbHHLcKZLxUEu0U5++ayr2QSOTg==",
+  "dgSpecHash": "oNKgIxJ2cynHTqVEvehLrFNLazP1GWqpokpAP7v8PG4dy2WW3oHODAmH65i3I0S6sc1pf+SgNIO2o/xE5iQ9Iw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\deniz\\source\\repos\\VarIAble\\VerIAble\\VerIAble.csproj",
+  "projectFilePath": "C:\\Users\\deniz\\source\\repos\\VarIAble\\VerIAble\\VerIAble.Test.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\deniz\\.nuget\\packages\\fluentvalidation\\11.7.1\\fluentvalidation.11.7.1.nupkg.sha512"
   ],

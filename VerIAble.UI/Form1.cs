@@ -4,7 +4,9 @@ using FluentValidation;
 using FluentValidation.Results;
 using System;
 using System.Globalization;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using VerIAble.UI.Classes;
 
 namespace VerIAble.UI
@@ -31,7 +33,7 @@ namespace VerIAble.UI
 
         // Optimize
         private DataGridView dataGridView;
-        DataGridViewComboBoxColumn comboBoxColumnList;
+        DataGridViewComboBoxColumn comboBoxColumnList = new DataGridViewComboBoxColumn();
         // Optimize
 
         public Form1()
@@ -169,8 +171,7 @@ namespace VerIAble.UI
                                                     Field newHeader = new Field();
                                                     newHeader.Value = cell;
                                                     Headers.Add(newHeader);
-
-                                                    // Headers loaded
+                                                   // Headers loaded
                                                 }
                                                 else
                                                 {
@@ -189,14 +190,13 @@ namespace VerIAble.UI
                                     dataGridView1.DataSource = Headers;
 
                                     // Custom Types Column
-                                    DataGridViewComboBoxColumn comboBoxColumn = new DataGridViewComboBoxColumn();
-                                    comboBoxColumn.HeaderText = "CustomTypes";
-                                    comboBoxColumn.DataPropertyName = "Type";
-                                    comboBoxColumn.DataSource = CustomTypes;
-                                    comboBoxColumn.DisplayMember = "Type";
-                                    comboBoxColumn.ValueMember = "Type";
+                                    comboBoxColumnList.HeaderText = "CustomTypes";
+                                    comboBoxColumnList.DataPropertyName = "Type";
+                                    comboBoxColumnList.DataSource = CustomTypes;
+                                    comboBoxColumnList.DisplayMember = "Type";
+                                    comboBoxColumnList.ValueMember = "Type";
 
-                                    dataGridView1.Columns.Add(comboBoxColumn);
+                                    dataGridView1.Columns.Add(comboBoxColumnList);
                                     //dataGridView1.Columns[1].DataPropertyName = "Type";
                                     //dataGridView1.Columns.Insert(1, comboBoxColumn);
 
@@ -237,7 +237,7 @@ namespace VerIAble.UI
 
                     Headers.ElementAt(rowNumber).Type = selectedValue;
 
-                    
+
                     foreach (CustomType ct in CustomTypes)
                     {
                         if (ct.Type.Equals(selectedValue))
@@ -267,7 +267,6 @@ namespace VerIAble.UI
                     dataGridView1.Update();
                 }
             }
-
         }
 
         private void ApplyRules(Field header, Data data)
@@ -295,6 +294,11 @@ namespace VerIAble.UI
 
             data.MustStartsWith = header.MustStartsWith;
             data.MustEndsWith = header.MustEndsWith;
+            data.MustContains = header.MustContains;
+
+            data.Pattern = header.Pattern;
+
+            data.AllowedValues = header.AllowedValues;
 
             data.Type = header.Type;
         }
@@ -325,6 +329,11 @@ namespace VerIAble.UI
 
             field.MustStartsWith = customType.MustStartsWith;
             field.MustEndsWith = customType.MustEndsWith;
+            field.MustContains = customType.MustContains;
+
+            field.AllowedValues = customType.AllowedValues;
+
+            field.Pattern = customType.Pattern;
 
             field.Type = customType.Type;
         }
@@ -343,6 +352,7 @@ namespace VerIAble.UI
             foreach (Data data in CellDatas)
             {
                 ApplyRules(Headers.ElementAt(data.CsvIndex % Headers.Count), data);
+
                 // Data rules Applied
             }
 
@@ -380,7 +390,7 @@ namespace VerIAble.UI
 
                 string csvContent = ToCsv(CustomTypes);
 
-                File.WriteAllText(Environment.CurrentDirectory + "\\"+inputDialog.FileName+".csv", csvContent);
+                File.WriteAllText(Environment.CurrentDirectory + "\\" + inputDialog.FileName + ".csv", csvContent);
 
                 Console.WriteLine("Export File: " + Environment.CurrentDirectory + "\\" + inputDialog.FileName + ".csv");
             }
@@ -401,7 +411,14 @@ namespace VerIAble.UI
 
                     MessageBox.Show("Settings Imported!", "Import Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    Console.WriteLine("Import File: "+filePath);
+                    Console.WriteLine("Import File: " + filePath);
+
+                    comboBoxColumnList.DataSource = CustomTypes;
+
+                    //dataGridView1.Columns.Clear();
+
+                    //foreach()
+
                 }
             }
         }
@@ -446,9 +463,9 @@ namespace VerIAble.UI
         // Saves Changes on CustomTypes to Fields when clicked Save Changes Button in CustomTypeForm
         public void saveChanges()
         {
-            foreach(CustomType customType in CustomTypes)
+            foreach (CustomType customType in CustomTypes)
             {
-                foreach(Field field in Headers)
+                foreach (Field field in Headers)
                 {
                     if (field.Type.Equals(customType.Type))
                     {
@@ -472,13 +489,16 @@ namespace VerIAble.UI
             int rawNumberOfData = data.CsvIndex / headers.Count + 2;
             int columnNumberOfData = data.CsvIndex % headers.Count + 1;
 
-            if (data.Type.Equals("Email")) // Develop This for default settings
-            {
-                RuleFor(x => x.Value).EmailAddress().WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Invalid EMAIL Format!" + "// Violation with: " + data.Value));
-            }
+            //if (data.Type.Equals("Email")) // Develop This for default settings
+            //{
+            //    RuleFor(x => x.Value).EmailAddress().WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Invalid EMAIL Format!" + "// Violation with: " + data.Value));
+            //}
+
+            // if value is null & AllowNull is false, there is no need for other rules.
             if (!data.AllowNull)
             {
                 RuleFor(x => x.Value).NotEmpty().WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Can not be EMPTY!"));
+                //if (!String.IsNullOrEmpty(data.Value))
             }
             if (!data.AllowNumerics)
             {
@@ -507,7 +527,7 @@ namespace VerIAble.UI
             }
             if (data.MustSameWith != "" && data.MustSameWith != null)
             {
-                RuleFor(x => x).Must(IsSameWith).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Mus same with: " + data.MustSameWith));
+                RuleFor(x => x).Must(IsSameWith).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Must be same with: " + data.MustSameWith));
             }
             if (data.AllMustLower == true)
             {
@@ -517,6 +537,27 @@ namespace VerIAble.UI
             {
                 RuleFor(x => x.Value).Must(AllUpper).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Must be UPPER CASE: " + data.Value));
             }
+            if (!String.IsNullOrEmpty(data.MustStartsWith))
+            {
+                RuleFor(x => x).Must(IsStartsWith).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Must be START with: " + data.MustStartsWith));
+            }
+            if (!String.IsNullOrEmpty(data.MustEndsWith))
+            {
+                RuleFor(x => x).Must(IsEndsWith).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Must be END with: " + data.MustEndsWith));
+            }
+            if (!String.IsNullOrEmpty(data.MustContains))
+            {
+                RuleFor(x => x).Must(IsContains).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Must CONTAIN: " + data.MustContains));
+            }
+            if (!String.IsNullOrEmpty(data.Pattern))
+            {
+                RuleFor(x => x).Must(ValidRegex).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "Invalid Regex in: " + data.Value));
+            }
+            if (!String.IsNullOrEmpty(data.AllowedValues))
+            {
+                RuleFor(x => x).Must(IsAllowedValue).WithMessage(ViolationMessage(rawNumberOfData, columnNumberOfData, "This value is Not Allowed!: " + data.Value));
+            }
+
         }
         private string ViolationMessage(int row, int column, string Message)
         {
@@ -575,6 +616,40 @@ namespace VerIAble.UI
             string sameValue = datas.ElementAt(headers.Count * rowIndex + sameIndex % headers.Count).Value;
 
             return data.Value.Equals(sameValue);
+        }
+        private bool IsStartsWith(Data data)
+        {
+            return data.Value.StartsWith(data.MustStartsWith);
+        }
+        private bool IsEndsWith(Data data)
+        {
+            return data.Value.EndsWith(data.MustEndsWith);
+        }
+        private bool IsContains(Data data)
+        {
+            return data.Value.Contains(data.MustContains);
+        }
+        private bool IsAllowedValue(Data data)
+        {
+            string[] allowedValues = data.AllowedValues.Split(',');
+
+            foreach (string value in allowedValues)
+            {
+                if (value.Trim() == data.Value)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        private bool ValidRegex(Data data)
+        {
+            Regex regex = new Regex(@"" + data.Pattern);
+
+            Match match = regex.Match(data.Value);
+
+            return match.Success;
         }
     }
 }

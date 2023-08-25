@@ -99,5 +99,22 @@ namespace VerIAble.UI
             mainForm.saveChanges();
             MessageBox.Show("Changes Saved!", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+        // Not a good solution
+
+        //private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        //{
+        //    int changedRow = e.RowIndex;
+        //    int changedCol = e.ColumnIndex;
+
+        //    if (dataGridView1.Columns[changedCol].HeaderText.Equals("OnlyNumerics"))
+        //    {
+        //        customTypes.ElementAt(changedRow).ChangeOnOnlyNumerics();
+        //    }
+        //    if (dataGridView1.Columns[changedCol].HeaderText.Equals("OnlyLetters"))
+        //    {
+        //        customTypes.ElementAt(changedRow).ChangeOnOnlyLetters();
+        //    }
+        //}
     }
 }

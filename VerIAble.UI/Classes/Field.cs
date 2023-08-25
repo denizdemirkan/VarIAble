@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace VerIAble.UI.Classes
 {
-    public class Field
+    public class Field : AbstractData
     {
-        public string Value { get; set; }
+
         [Browsable(false)]
         public string Type { get; set; }
         [Browsable(false)]
-
+        public string Description { get; set; }
+        [Browsable(false)]
         public bool MustBeUnique { get; set; }
         [Browsable(false)]
         public bool AllowNull { get; set; }
@@ -51,6 +52,8 @@ namespace VerIAble.UI.Classes
         public string MustStartsWith { get; set; }
         [Browsable(false)]
         public string MustEndsWith { get; set; }
+        [Browsable(false)]
+        public string MustContains { get; set; }
         [Browsable(false)]
         public string AllowedValues { get; set; }
 

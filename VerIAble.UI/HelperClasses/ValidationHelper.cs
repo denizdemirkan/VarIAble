@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VerIAble.UI.Classes
+namespace VerIAble.UI.HelperClasses
 {
-    public class Data : AbstractData
+    public class ValidationHelper
     {
-        public int CsvIndex { get; set; }
     }
 }

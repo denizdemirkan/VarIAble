@@ -1,0 +1,13 @@
+Value,MustSameWith,Type,Description,MustBeUnique,AllowNull,MaxLenght,MinLenght,TotalLenght,OnlyLetters,OnlyNumerics,AllowNumerics,AllowSpecialCharacters,AllowSpace,MustBeInteger,MustBeDecimal,AllMustUpper,AllMustLower,MustStartsWith,MustEndsWith,MustContains,AllowedValues,Pattern
+,,Integer,,False,True,100,0,0,False,True,True,False,False,False,False,False,False,,,,,
+,,Phone Number,,True,False,100,0,10,False,True,True,False,False,True,False,False,False,,,,,
+,,Name,,False,True,100,0,0,True,False,False,False,True,False,False,False,False,,,,,
+,,String,,False,True,100,0,0,False,False,True,True,True,False,False,False,False,,,,,
+,,Email,,True,False,100,0,0,False,False,True,True,False,False,False,False,False,,,,,"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+,,UID,,True,False,100,0,0,False,True,True,False,False,True,False,False,False,,,,,
+,,StartWith Type,,False,True,100,0,0,False,False,True,True,False,False,False,False,False,trpl12,,,,
+,,EndsWith Type,,False,True,100,0,0,False,False,True,True,False,False,False,False,False,,id,,,
+,,Include Type,,False,True,100,0,0,False,False,True,True,False,False,False,False,False,,,hello,,
+,,tripleidMail Regex,,False,True,100,0,0,False,False,True,True,False,False,False,False,False,,,,,^[a-zA-Z0-9._%+-]+@triple-id\.com$
+,,TCKN,,True,True,100,0,0,False,False,True,True,False,False,False,False,False,,,,,^[1-9]{1}[0-9]{9}[02468]{1}$
+,,Blood Type,,False,False,100,0,0,False,False,True,True,False,False,False,False,False,,,,"A+,A-,B+,B-,AB+,AB-,0+,0-",

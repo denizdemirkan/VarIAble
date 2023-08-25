@@ -53,9 +53,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\deniz\\source\\repos\\VarIAble\\VerIAble\\VerIAble.csproj",
-      "projectName": "VerIAble",
-      "projectPath": "C:\\Users\\deniz\\source\\repos\\VarIAble\\VerIAble\\VerIAble.csproj",
+      "projectUniqueName": "C:\\Users\\deniz\\source\\repos\\VarIAble\\VerIAble\\VerIAble.Test.csproj",
+      "projectName": "VerIAble.Test",
+      "projectPath": "C:\\Users\\deniz\\source\\repos\\VarIAble\\VerIAble\\VerIAble.Test.csproj",
       "packagesPath": "C:\\Users\\deniz\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\deniz\\source\\repos\\VarIAble\\VerIAble\\obj\\",
       "projectStyle": "PackageReference",
