@@ -11,16 +11,16 @@ namespace VerIAble.UI.HelperClasses
 {
     public class CustomDataValidator : AbstractValidator<Data>
     {
-        private List<Field> headers;
+        private List<Data> fields;
         private List<Data> datas;
-        private List<string> headerValues;
-        public CustomDataValidator(Data data, List<Field> headers, List<Data> datas, List<string> headerValues)
+        private List<string> fieldNames;
+        public CustomDataValidator(Data data, List<Data> fields, List<Data> datas, List<string> fieldNames)
         {
-            this.headers = headers;
+            this.fields = fields;
             this.datas = datas;
-            this.headerValues = headerValues;
-            int rawNumberOfData = data.CsvIndex / headers.Count + 2;
-            int columnNumberOfData = data.CsvIndex % headers.Count + 1;
+            this.fieldNames = fieldNames;
+            int rawNumberOfData = data.CsvIndex / fields.Count + 2;
+            int columnNumberOfData = data.CsvIndex % fields.Count + 1;
 
             // if value is null & AllowNull is false, there is no need for other rules.
             if (!data.AllowNull)
@@ -115,7 +115,7 @@ namespace VerIAble.UI.HelperClasses
             int counter = 0;
             foreach (Data tempData in datas)
             {
-                if (tempData.CsvIndex % headers.Count == data.CsvIndex % headers.Count && data.Value.Equals(tempData.Value))
+                if (tempData.CsvIndex % fields.Count == data.CsvIndex % fields.Count && data.Value.Equals(tempData.Value))
                 {
                     counter++;
                 }
@@ -137,11 +137,11 @@ namespace VerIAble.UI.HelperClasses
         }
         private bool IsSameWith(Data data)
         {
-            int rowIndex = (data.CsvIndex / headers.Count);
-            int columnIndex = data.CsvIndex + 1 % headers.Count;
-            int sameIndex = headerValues.IndexOf(data.MustSameWith); // Same Column Index
+            int rowIndex = (data.CsvIndex / fields.Count);
+            int columnIndex = data.CsvIndex + 1 % fields.Count;
+            int sameIndex = fieldNames.IndexOf(data.MustSameWith); // Same Column Index
 
-            string sameValue = datas.ElementAt(headers.Count * rowIndex + sameIndex % headers.Count).Value;
+            string sameValue = datas.ElementAt(fields.Count * rowIndex + sameIndex % fields.Count).Value;
 
             return data.Value.Equals(sameValue);
         }

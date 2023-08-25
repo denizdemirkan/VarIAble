@@ -10,7 +10,6 @@ namespace VerIAble.UI.Classes
     public class AbstractData
     {
         public string Value { get; set; }
-        public string Type { get; set; }
         public string Description { get; set; }
         public bool MustBeUnique { get; set; }
         public bool AllowNull { get; set; }

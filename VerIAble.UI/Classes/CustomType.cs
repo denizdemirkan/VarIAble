@@ -11,6 +11,7 @@ namespace VerIAble.UI.Classes
     {
 
         // Add this Annotation to Hide Fields in Data Grid Views
+        public string Name { get; set; }
 
         [Browsable(false)]
         public string Value { get; set; }
@@ -22,10 +23,10 @@ namespace VerIAble.UI.Classes
         {
             
         }
-        public CustomType(string type)
+        public CustomType(string Name)
         {
             // These are defaults
-            this.Type = type;
+            this.Name = Name;
             this.MaxLenght = 100;
             this.MinLenght = 0;
             this.TotalLenght = 0;

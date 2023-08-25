@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using VerIAble.UI.Classes;
 using VerIAble.UI.Forms;
 using VerIAble.UI.HelperClasses;
@@ -23,11 +24,11 @@ namespace VerIAble.UI
 
         List<string> Errors = new List<string>();
 
-        List<Field> Headers = new List<Field>();
+        List<Data> Fields = new List<Data>();
 
         List<Data> CellDatas = new List<Data>();
 
-        List<string> headerCellValues = new List<string>();
+        List<string> fieldNames = new List<string>();
 
         List<CustomType> CustomTypes = new List<CustomType>();
 
@@ -170,9 +171,9 @@ namespace VerIAble.UI
                                             {
                                                 if (lineCount == 1)
                                                 {
-                                                    Field newHeader = new Field();
-                                                    newHeader.Value = cell;
-                                                    Headers.Add(newHeader);
+                                                    Data newField = new Data();
+                                                    newField.Value = cell;
+                                                    Fields.Add(newField);
                                                    // Headers loaded
                                                 }
                                                 else
@@ -189,14 +190,14 @@ namespace VerIAble.UI
                                         }
 
                                     }
-                                    dataGridView1.DataSource = Headers;
+                                    dataGridView1.DataSource = Fields;
 
                                     // Custom Types Column
                                     comboBoxColumnList.HeaderText = "CustomTypes";
-                                    comboBoxColumnList.DataPropertyName = "Type";
+                                    comboBoxColumnList.DataPropertyName = "Name";
                                     comboBoxColumnList.DataSource = CustomTypes;
-                                    comboBoxColumnList.DisplayMember = "Type";
-                                    comboBoxColumnList.ValueMember = "Type";
+                                    comboBoxColumnList.DisplayMember = "Name";
+                                    comboBoxColumnList.ValueMember = "Name";
 
                                     dataGridView1.Columns.Add(comboBoxColumnList);
                                     //dataGridView1.Columns[1].DataPropertyName = "Type";
@@ -204,13 +205,13 @@ namespace VerIAble.UI
 
 
                                     // SameWith Column
-                                    foreach (Field header in Headers)
+                                    foreach (Data field in Fields)
                                     {
-                                        headerCellValues.Add(header.Value);
+                                        fieldNames.Add(field.Value);
                                     }
                                     DataGridViewComboBoxColumn sameWithColumn = new DataGridViewComboBoxColumn();
                                     sameWithColumn.HeaderText = "SameWith";
-                                    sameWithColumn.DataSource = headerCellValues;
+                                    sameWithColumn.DataSource = fieldNames;
 
                                     dataGridView1.Columns.Add(sameWithColumn);
 
@@ -230,27 +231,27 @@ namespace VerIAble.UI
             // On CustomType Change
             if (e.ColumnIndex == 1 && e.RowIndex >= 0)
             {
-                DataGridViewComboBoxCell comboBoxCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex] as DataGridViewComboBoxCell;
-                if (comboBoxCell != null)
+                if (e.ColumnIndex == comboBoxColumnList.Index && e.RowIndex >= 0)
                 {
-                    int rowNumber = e.RowIndex;
+                    DataGridViewComboBoxCell comboBoxCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex] as DataGridViewComboBoxCell;
 
-                    string selectedValue = comboBoxCell.Value.ToString();
-
-                    Headers.ElementAt(rowNumber).Type = selectedValue;
-
-
-                    foreach (CustomType ct in CustomTypes)
+                    if (comboBoxCell != null && comboBoxCell.Value != null)
                     {
-                        if (ct.Type.Equals(selectedValue))
+                        CustomType selectedCustomType = CustomTypes.FirstOrDefault(x => x.Name == comboBoxCell.Value);
+
+                        if (selectedCustomType != null)
                         {
-                            ApplyRulesToField(Headers.ElementAt(rowNumber), ct);
+                            Data currentField = Fields.ElementAt(e.RowIndex);
+                            //currentField.Type = selectedCustomType;
+
+                            ApplyRulesToField(currentField, selectedCustomType);
                         }
                     }
-
-                    dataGridView1.Invalidate();
-                    dataGridView1.Update();
                 }
+
+                dataGridView1.Invalidate();
+                dataGridView1.Update();
+                
             }
 
             // On SameWith Change
@@ -263,7 +264,7 @@ namespace VerIAble.UI
 
                     string selectedValue = comboBoxCell.Value.ToString();
 
-                    Headers.ElementAt(rowNumber).MustSameWith = selectedValue;
+                    Fields.ElementAt(rowNumber).MustSameWith = selectedValue;
 
                     dataGridView1.Invalidate();
                     dataGridView1.Update();
@@ -271,73 +272,77 @@ namespace VerIAble.UI
             }
         }
 
-        private void ApplyRules(Field header, Data data)
+        private void ApplyRules(Data field, Data data)
         {
-            data.AllMustLower = header.AllMustLower;
-            data.AllMustUpper = header.AllMustUpper;
+            data.AllMustLower = field.AllMustLower;
+            data.AllMustUpper = field.AllMustUpper;
 
-            data.AllowSpace = header.AllowSpace;
-            data.AllowNull = header.AllowNull;
-            data.AllowNumerics = header.AllowNumerics;
-            data.AllowSpecialCharacters = header.AllowSpecialCharacters;
+            data.AllowSpace = field.AllowSpace;
+            data.AllowNull = field.AllowNull;
+            data.AllowNumerics = field.AllowNumerics;
+            data.AllowSpecialCharacters = field.AllowSpecialCharacters;
 
-            data.MaxLenght = header.MaxLenght;
-            data.MinLenght = header.MinLenght;
-            data.TotalLenght = header.TotalLenght;
+            data.MaxLenght = field.MaxLenght;
+            data.MinLenght = field.MinLenght;
+            data.TotalLenght = field.TotalLenght;
 
-            data.MustBeUnique = header.MustBeUnique;
-            data.MustBeDecimal = header.MustBeDecimal;
-            data.MustBeInteger = header.MustBeInteger;
+            data.MustBeUnique = field.MustBeUnique;
+            data.MustBeDecimal = field.MustBeDecimal;
+            data.MustBeInteger = field.MustBeInteger;
 
-            data.OnlyLetters = header.OnlyLetters;
-            data.OnlyNumerics = header.OnlyNumerics;
+            data.OnlyLetters = field.OnlyLetters;
+            data.OnlyNumerics = field.OnlyNumerics;
 
-            data.MustSameWith = header.MustSameWith;
+            data.MustSameWith = field.MustSameWith;
 
-            data.MustStartsWith = header.MustStartsWith;
-            data.MustEndsWith = header.MustEndsWith;
-            data.MustContains = header.MustContains;
+            data.MustStartsWith = field.MustStartsWith;
+            data.MustEndsWith = field.MustEndsWith;
+            data.MustContains = field.MustContains;
 
-            data.Pattern = header.Pattern;
+            data.Pattern = field.Pattern;
 
-            data.AllowedValues = header.AllowedValues;
+            data.AllowedValues = field.AllowedValues;
 
-            data.Type = header.Type;
+            data.Type = field.Type;
         }
 
         // Called After Calcultion
-        private void ApplyRulesToField(Field field, CustomType customType)
+        private void ApplyRulesToField(Data data, CustomType customType)
         {
-            field.AllMustLower = customType.AllMustLower;
-            field.AllMustUpper = customType.AllMustUpper;
+            data.Type = customType;
 
-            field.AllowSpace = customType.AllowSpace;
-            field.AllowNull = customType.AllowNull;
-            field.AllowNumerics = customType.AllowNumerics;
-            field.AllowSpecialCharacters = customType.AllowSpecialCharacters;
+            // actually no need for this check. But once application runs with async functions, we may need this.
+            if(data.Type == customType)
+            {
+                data.AllMustLower = data.Type.AllMustLower;
+                data.AllMustUpper = data.Type.AllMustUpper;
 
-            field.MaxLenght = customType.MaxLenght;
-            field.MinLenght = customType.MinLenght;
-            field.TotalLenght = customType.TotalLenght;
+                data.AllowSpace = data.Type.AllowSpace;
+                data.AllowNull = data.Type.AllowNull;
+                data.AllowNumerics = data.Type.AllowNumerics;
+                data.AllowSpecialCharacters = data.Type.AllowSpecialCharacters;
 
-            field.MustBeUnique = customType.MustBeUnique;
-            field.MustBeDecimal = customType.MustBeDecimal;
-            field.MustBeInteger = customType.MustBeInteger;
+                data.MaxLenght = data.Type.MaxLenght;
+                data.MinLenght = data.Type.MinLenght;
+                data.TotalLenght = data.Type.TotalLenght;
 
-            field.OnlyLetters = customType.OnlyLetters;
-            field.OnlyNumerics = customType.OnlyNumerics;
+                data.MustBeUnique = data.Type.MustBeUnique;
+                data.MustBeDecimal = data.Type.MustBeDecimal;
+                data.MustBeInteger = data.Type.MustBeInteger;
 
-            field.MustSameWith = customType.MustSameWith;
+                data.OnlyLetters = data.Type.OnlyLetters;
+                data.OnlyNumerics = data.Type.OnlyNumerics;
 
-            field.MustStartsWith = customType.MustStartsWith;
-            field.MustEndsWith = customType.MustEndsWith;
-            field.MustContains = customType.MustContains;
+                data.MustSameWith = data.Type.MustSameWith;
 
-            field.AllowedValues = customType.AllowedValues;
+                data.MustStartsWith = data.Type.MustStartsWith;
+                data.MustEndsWith = data.Type.MustEndsWith;
+                data.MustContains = data.Type.MustContains;
 
-            field.Pattern = customType.Pattern;
+                data.AllowedValues = data.Type.AllowedValues;
 
-            field.Type = customType.Type;
+                data.Pattern = data.Type.Pattern;
+            }
         }
 
         private void typesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -353,14 +358,14 @@ namespace VerIAble.UI
 
             foreach (Data data in CellDatas)
             {
-                ApplyRules(Headers.ElementAt(data.CsvIndex % Headers.Count), data);
+                ApplyRules(Fields.ElementAt(data.CsvIndex % Fields.Count), data);
 
                 // Data rules Applied
             }
 
             foreach (Data data in CellDatas)
             {
-                CustomDataValidator validator = new CustomDataValidator(data, this.Headers, this.CellDatas, this.headerCellValues);
+                CustomDataValidator validator = new CustomDataValidator(data, this.Fields, this.CellDatas, this.fieldNames);
                 ValidationResult result = validator.Validate(data);
                 if (!result.IsValid)
                 {
@@ -429,11 +434,11 @@ namespace VerIAble.UI
         static string ToCsv<T>(IEnumerable<T> items)
         {
             var properties = typeof(T).GetProperties();
-            var header = string.Join(",", properties.Select(p => p.Name));
+            var field = string.Join(",", properties.Select(p => p.Name));
 
             var csvLines = items.Select(item => string.Join(",", properties.Select(p => FormatCsvValue(p.GetValue(item)))));
 
-            return header + Environment.NewLine + string.Join(Environment.NewLine, csvLines);
+            return field + Environment.NewLine + string.Join(Environment.NewLine, csvLines);
         }
         static string FormatCsvValue(object value)
         {
@@ -467,12 +472,12 @@ namespace VerIAble.UI
         {
             foreach (CustomType customType in CustomTypes)
             {
-                foreach (Field field in Headers)
+                foreach (Data data in Fields)
                 {
-                    if (field.Type.Equals(customType.Type))
-                    {
-                        ApplyRulesToField(field, customType);
-                    }
+                    //if (data.Type.Equals(customType.Type))
+                    //{
+                    //    ApplyRulesToField(data, customType);
+                    //}
                 }
             }
         }
