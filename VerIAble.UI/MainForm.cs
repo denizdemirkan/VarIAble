@@ -145,84 +145,34 @@ namespace VerIAble.UI
 
             if (result == DialogResult.Yes)
             {
-                using (CsvSeperatorQuestionForm seperatorQuestion = new CsvSeperatorQuestionForm())
+                DataLoader.LoadFromCSV(Fields, CellDatas);
+
+                dataGridView1.DataSource = Fields;
+
+                // Custom Types Column
+                comboBoxColumnList.HeaderText = "CustomTypes";
+                comboBoxColumnList.DataPropertyName = "Name";
+                comboBoxColumnList.DataSource = CustomTypes;
+                comboBoxColumnList.DisplayMember = "Name";
+                comboBoxColumnList.ValueMember = "Name";
+
+                dataGridView1.Columns.Add(comboBoxColumnList);
+                //dataGridView1.Columns[1].DataPropertyName = "Type";
+                //dataGridView1.Columns.Insert(1, comboBoxColumn);
+
+                // SameWith Column
+                foreach (Data field in Fields)
                 {
-                    if (seperatorQuestion.ShowDialog() == DialogResult.OK)
-                    {
-                        {
-                            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-                            {
-                                openFileDialog.Filter = "CSV file (*.csv)|*.csv";
-                                openFileDialog.Title = "Select CSV File";
-
-                                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                                {
-                                    using (StreamReader reader = new StreamReader(openFileDialog.FileName))
-                                    {
-                                        int lineCount = 1;
-                                        int indexCount = 0;
-                                        while (!reader.EndOfStream)
-                                        {
-
-                                            string line = reader.ReadLine();
-                                            string[] cells = line.Split(seperatorQuestion.SelectedOption);
-
-                                            foreach (string cell in cells)
-                                            {
-                                                if (lineCount == 1)
-                                                {
-                                                    Data newField = new Data();
-                                                    newField.Value = cell;
-                                                    Fields.Add(newField);
-                                                   // Headers loaded
-                                                }
-                                                else
-                                                {
-                                                    Data newData = new Data();
-                                                    newData.Value = cell;
-                                                    newData.CsvIndex = indexCount;
-                                                    CellDatas.Add(newData);
-                                                    indexCount++;
-                                                    // Data cells loaded
-                                                }
-                                            }
-                                            lineCount++;
-                                        }
-
-                                    }
-                                    dataGridView1.DataSource = Fields;
-
-                                    // Custom Types Column
-                                    comboBoxColumnList.HeaderText = "CustomTypes";
-                                    comboBoxColumnList.DataPropertyName = "Name";
-                                    comboBoxColumnList.DataSource = CustomTypes;
-                                    comboBoxColumnList.DisplayMember = "Name";
-                                    comboBoxColumnList.ValueMember = "Name";
-
-                                    dataGridView1.Columns.Add(comboBoxColumnList);
-                                    //dataGridView1.Columns[1].DataPropertyName = "Type";
-                                    //dataGridView1.Columns.Insert(1, comboBoxColumn);
-
-
-                                    // SameWith Column
-                                    foreach (Data field in Fields)
-                                    {
-                                        fieldNames.Add(field.Value);
-                                    }
-                                    DataGridViewComboBoxColumn sameWithColumn = new DataGridViewComboBoxColumn();
-                                    sameWithColumn.HeaderText = "SameWith";
-                                    sameWithColumn.DataSource = fieldNames;
-
-                                    dataGridView1.Columns.Add(sameWithColumn);
-
-                                    //dataGridView1.Columns[2].DataPropertyName = "MustSameWith";
-                                    //dataGridView1.Columns.Insert(2, sameWithColumn);
-
-                                }
-                            }
-                        }
-                    }
+                    fieldNames.Add(field.Value);
                 }
+                DataGridViewComboBoxColumn sameWithColumn = new DataGridViewComboBoxColumn();
+                sameWithColumn.HeaderText = "SameWith";
+                sameWithColumn.DataSource = fieldNames;
+
+                dataGridView1.Columns.Add(sameWithColumn);
+
+                //dataGridView1.Columns[2].DataPropertyName = "MustSameWith";
+                //dataGridView1.Columns.Insert(2, sameWithColumn);
             }
         }
 

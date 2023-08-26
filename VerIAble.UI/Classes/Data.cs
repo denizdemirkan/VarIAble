@@ -68,8 +68,8 @@ namespace VerIAble.UI.Classes
         public Data()
         {
             // Default Settings
-            this.MaxLenght = 50;
-            this.MinLenght = 1;
+            this.MaxLenght = 100;
+            this.MinLenght = 0;
             this.TotalLenght = 0;
 
             this.AllMustLower = false;
