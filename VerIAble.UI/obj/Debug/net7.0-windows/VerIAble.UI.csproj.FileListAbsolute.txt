@@ -42,9 +42,7 @@ C:\Users\deniz\source\repos\VarIAble\VerIAble.UI\obj\Debug\net7.0-windows\refint
 C:\Users\deniz\source\repos\VarIAble\VerIAble.UI\obj\Debug\net7.0-windows\VerIAble.UI.pdb
 C:\Users\deniz\source\repos\VarIAble\VerIAble.UI\obj\Debug\net7.0-windows\VerIAble.UI.genruntimeconfig.cache
 C:\Users\deniz\source\repos\VarIAble\VerIAble.UI\obj\Debug\net7.0-windows\ref\VerIAble.UI.dll
-C:\Users\deniz\source\repos\VarIAble\VerIAble.UI\obj\Debug\net7.0-windows\VerIAble.UI.Forms.CsvSeperatorQuestionForm.resources
 C:\Users\deniz\source\repos\VarIAble\VerIAble.UI\obj\Debug\net7.0-windows\VerIAble.UI.Forms.CustomTypesForm.resources
-C:\Users\deniz\source\repos\VarIAble\VerIAble.UI\obj\Debug\net7.0-windows\VerIAble.UI.Forms.ExportImportForm.resources
 C:\Users\deniz\source\repos\VarIAble\VerIAble.UI\obj\Debug\net7.0-windows\VerIAble.UI.Forms.InputDialog.resources
 C:\Users\deniz\source\repos\VarIAble\VerIAble.UI\obj\Debug\net7.0-windows\VerIAble.UI.Forms.Statictics.resources
 C:\Users\deniz\source\repos\VarIAble\VerIAble.UI\obj\Debug\net7.0-windows\VerIAble.UI.MainForm.resources
