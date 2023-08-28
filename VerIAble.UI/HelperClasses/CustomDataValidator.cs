@@ -118,10 +118,10 @@ namespace VerIAble.UI.HelperClasses
                 if (tempData.CsvIndex % fields.Count == data.CsvIndex % fields.Count && data.Value.Equals(tempData.Value))
                 {
                     counter++;
-                }
-                if (counter > 1)
-                {
-                    return false;
+                    if (counter > 1)
+                    {
+                        return false;
+                    }
                 }
             }
             return true;
@@ -147,7 +147,8 @@ namespace VerIAble.UI.HelperClasses
         }
         private bool IsStartsWith(Data data)
         {
-            return data.Value.StartsWith(data.MustStartsWith);
+            string foundRegex = StringFieldFilter.NonRegexFillWithFields(data.MustStartsWith, this.fields, this.datas, data);
+            return data.Value.StartsWith(foundRegex);
         }
         private bool IsEndsWith(Data data)
         {

@@ -1,66 +1,41 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Threading.Channels;
 
-public class SourceClass
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public double Value { get; set; }
-}
+string patternStart = "[/*";
+string patternEnd = "*/]";
 
-public class TargetClass
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public double Value { get; set; }
-    public DateTime Date { get; set; }
-}
+string givenRegex = "asd[/*firstname*/]1112[/*lastName*/]bcd";
 
-class Program
+string value = "deniz";
+
+int start = givenRegex.IndexOf(patternStart)+ patternStart.Length;
+int end = givenRegex.IndexOf(patternEnd);
+//Console.WriteLine(givenRegex.Substring(start,end-start));
+Console.WriteLine(Changer(givenRegex));
+// bul [/*firstname*/] patterninin tamamını deniz olarak değiştir oluşan yeni stringte tekrar arama yap.
+// eğer başka patternler varsa bitene kadar devam et.
+
+
+
+string Changer(string statement) 
 {
-    static void CopyMatchingProperties(object source, object target)
+    bool flag = true;
+    string result = statement.ToString();
+
+    while (flag)
     {
-        Type sourceType = source.GetType();
-        Type targetType = target.GetType();
-
-        PropertyInfo[] sourceProperties = sourceType.GetProperties();
-        PropertyInfo[] targetProperties = targetType.GetProperties();
-
-        foreach (PropertyInfo sourceProperty in sourceProperties)
+        if(result.IndexOf(patternStart) == -1)
         {
-            PropertyInfo targetProperty = Array.Find(targetProperties, prop => prop.Name == sourceProperty.Name && prop.PropertyType == sourceProperty.PropertyType);
-
-            if (targetProperty != null)
-            {
-                object valueToCopy = sourceProperty.GetValue(source);
-                targetProperty.SetValue(target, valueToCopy);
-            }
+            flag = false;
+            return result;
         }
+
+        int start = result.IndexOf(patternStart) + patternStart.Length;
+        int end = result.IndexOf(patternEnd);
+        string searchedVal = result.Substring(start, end - start);
+
+        result = result.Replace(patternStart+searchedVal+patternEnd, searchedVal);
+        Console.WriteLine(searchedVal);
+
     }
-
-    static void Main(string[] args)
-    {
-        SourceClass source = new SourceClass
-        {
-            Id = 1,
-            Name = "Source Object",
-            Value = 42.0
-        };
-
-        TargetClass target = new TargetClass
-        {
-            Id = 10,
-            Name = "Target Object",
-            Value = 99.0,
-            Date = DateTime.Now
-        };
-
-        Console.WriteLine("Before Copy:");
-        Console.WriteLine($"Target Id: {target.Id}, Name: {target.Name}, Value: {target.Value}, Date: {target.Date}");
-
-        CopyMatchingProperties(source, target);
-
-        Console.WriteLine("\nAfter Copy:");
-        Console.WriteLine($"Target Id: {target.Id}, Name: {target.Name}, Value: {target.Value}, Date: {target.Date}");
-    }
+    return result;
 }

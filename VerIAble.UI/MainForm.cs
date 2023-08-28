@@ -24,7 +24,7 @@ namespace VerIAble.UI
 
         List<string> Errors = new List<string>();
 
-        List<Data> Fields = new List<Data>();
+        public List<Data> Fields = new List<Data>();
 
         List<Data> CellDatas = new List<Data>();
 
