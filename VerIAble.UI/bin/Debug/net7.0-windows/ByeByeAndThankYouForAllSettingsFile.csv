@@ -1,0 +1,11 @@
+Name,Value,MustSameWith,Description,MustBeUnique,AllowNull,MaxLenght,MinLenght,TotalLenght,OnlyLetters,OnlyNumerics,AllowNumerics,AllowSpecialCharacters,AllowSpace,MustBeInteger,MustBeDecimal,AllMustUpper,AllMustLower,MustStartsWith,MustEndsWith,MustContains,AllowedValues,Codex,CodexThreshold,Pattern
+Integer,,,,False,True,100,0,0,False,True,True,False,False,False,False,False,False,,,,,,0,
+Phone Number,,,,True,True,100,0,10,False,True,True,False,False,True,False,False,False,,,,,,0,
+Name,,,,False,True,100,0,0,True,False,False,False,True,False,False,False,False,,,,,C:\Users\deniz\OneDrive\Masaüstü\isimler.txt,80,
+String,,,,False,True,100,0,0,False,False,True,True,True,False,False,False,False,,,,,,0,
+Email,,,,True,False,100,0,0,False,False,True,True,False,False,False,False,False,,@triple-id.com,,,,0,"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+UID,,,,True,False,100,0,0,False,True,True,False,False,True,False,False,False,,,,,,0,
+TCKN Type,,,,True,False,100,0,11,False,True,True,False,False,False,False,False,False,,,,,,0,
+Triple-ID Email Regex,,,,True,False,100,0,0,False,False,True,True,False,False,False,False,False,,,,,,0,[/*First Name*/]\.[/*Last Name*/].intern@triple-id\.com$
+Blood Types,,,,False,True,100,0,0,False,False,True,True,False,False,False,False,False,,,,"A+,A-,B+,B-,AB+,AB-,0+,0-",,0,
+Username Type,,,,True,False,100,0,0,False,False,True,True,False,False,False,False,False,,,,,,0,[/*First Name*/]\.[/*Last Name*/][/*Age*/]

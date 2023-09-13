@@ -10,7 +10,7 @@ namespace VerIAble.UI.Classes
     public class CustomType : AbstractData
     {
 
-        // Add this Annotation to Hide Fields in Data Grid Views
+        // Add [Browsable(false)] Annotation to Hide Fields in Data Grid Views
         public string Name { get; set; }
 
         [Browsable(false)]
@@ -23,6 +23,7 @@ namespace VerIAble.UI.Classes
         {
             
         }
+
         public CustomType(string Name)
         {
             // These are defaults
@@ -45,34 +46,6 @@ namespace VerIAble.UI.Classes
             this.AllowSpecialCharacters = true;
             this.AllowSpace = false;
             this.AllowNull = true;
-        }
-
-        // Rules on Fields Change  && Bug -> priotizing of the called function matters.
-
-        //public void SaveOnChange()
-        //{
-        //    ChangeOnOnlyLetters();
-        //    ChangeOnOnlyNumerics();
-        //}
-        public void ChangeOnOnlyNumerics()
-        {
-            if (this.OnlyNumerics)
-            {
-                AllowNumerics = true;
-                OnlyLetters = false;
-                AllowSpace = false;
-                AllowSpecialCharacters = false;
-            }
-        }
-        public void ChangeOnOnlyLetters()
-        {
-            if (this.OnlyLetters)
-            {
-                AllowNumerics = false;
-                OnlyNumerics = false;
-                AllowSpace = false;
-                AllowSpecialCharacters = false;
-            }
         }
     }
 }

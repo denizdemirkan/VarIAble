@@ -97,5 +97,35 @@ namespace VerIAble.UI.HelperClasses
                 }
             }
         }
+
+        public static List<string> ReadTextFileLines(string filePath)
+        {
+            List<string> lines = new List<string>();
+
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    using (StreamReader reader = new StreamReader(filePath))
+                    {
+                        string line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            lines.Add(line);
+                        }
+                    }
+                }
+                else
+                {
+                    lines.Add("Codex File Couldn't Found!");
+                }
+            }
+            catch (Exception ex)
+            {
+                lines.Add("Error: " + ex.Message);
+            }
+            return lines;
+        }
+
     }
 }

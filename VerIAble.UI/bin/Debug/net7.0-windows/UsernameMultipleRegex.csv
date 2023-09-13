@@ -1,0 +1,11 @@
+Name,Value,MustSameWith,Description,MustBeUnique,AllowNull,MaxLenght,MinLenght,TotalLenght,OnlyLetters,OnlyNumerics,AllowNumerics,AllowSpecialCharacters,AllowSpace,MustBeInteger,MustBeDecimal,AllMustUpper,AllMustLower,MustStartsWith,MustEndsWith,MustContains,AllowedValues,Pattern
+Integer,,,,False,True,100,0,0,False,True,True,False,False,False,False,False,False,,,,,
+Phone Number,,,,True,True,100,0,10,False,True,True,False,False,True,False,False,False,,,,,
+Name,,,,False,True,100,0,0,True,False,False,False,True,False,False,False,False,,,,,
+String,,,,False,True,100,0,0,False,False,True,True,True,False,False,False,False,,,,,
+Email,,,,True,True,100,0,0,False,False,True,True,False,False,False,False,False,,,,,
+UID,,,,True,True,100,0,0,False,True,True,False,False,True,False,False,False,,,,,
+Starts With FirstName,,,,False,True,100,0,0,False,False,True,True,False,False,False,False,False,[/*First Name*/],,,,
+Ends With LastName,,,,False,True,100,0,0,False,False,True,True,False,False,False,False,False,,[/*Last Name*/],,,
+Triple-ID email regex,,,,True,False,100,0,0,False,False,True,True,False,False,False,False,False,,,,,[/*First Name*/]\.[/*Last Name*/].intern@triple-id\.com$
+Username,,,,True,False,100,0,0,False,False,True,True,False,False,False,False,False,,,,,[/*First Name*/]\.[/*Last Name*/][/*Age*/]

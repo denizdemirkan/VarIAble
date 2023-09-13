@@ -17,6 +17,7 @@ namespace VerIAble.UI.Forms
         private Button btnSaveChanges;
         List<CustomType> customTypes;
         public MainForm mainForm;
+
         public CustomTypesForm(List<CustomType> customTypes, MainForm mainForm)
         {
             InitializeComponent();
@@ -44,6 +45,7 @@ namespace VerIAble.UI.Forms
             dataGridView1.RowTemplate.Height = 29;
             dataGridView1.Size = new Size(1459, 459);
             dataGridView1.TabIndex = 0;
+            dataGridView1.CellMouseClick += dataGridView1_CellMouseClick;
             // 
             // btnAddType
             // 
@@ -100,21 +102,28 @@ namespace VerIAble.UI.Forms
             MessageBox.Show("Changes Saved!", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        // Not a good solution
 
-        //private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        //{
-        //    int changedRow = e.RowIndex;
-        //    int changedCol = e.ColumnIndex;
+        private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            //MessageBox.Show(dataGridView1.Columns[e.ColumnIndex].Name);
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
 
-        //    if (dataGridView1.Columns[changedCol].HeaderText.Equals("OnlyNumerics"))
-        //    {
-        //        customTypes.ElementAt(changedRow).ChangeOnOnlyNumerics();
-        //    }
-        //    if (dataGridView1.Columns[changedCol].HeaderText.Equals("OnlyLetters"))
-        //    {
-        //        customTypes.ElementAt(changedRow).ChangeOnOnlyLetters();
-        //    }
-        //}
+                if (dataGridView1.Columns[e.ColumnIndex].Name == "Codex")
+                {
+                    Console.WriteLine(dataGridView1.Columns[e.ColumnIndex].Name);
+
+                    OpenFileDialog openFileDialog = new OpenFileDialog();
+                    openFileDialog.Filter = "Text Files|*.txt";
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string selectedFilePath = openFileDialog.FileName;
+
+                        dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = selectedFilePath;
+                    }
+                }
+            }
+        }
     }
 }

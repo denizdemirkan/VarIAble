@@ -40,6 +40,8 @@
             importSettingsToolStripMenuItem1 = new ToolStripMenuItem();
             exportSettingsToolStripMenuItem = new ToolStripMenuItem();
             statisticsToolStripMenuItem = new ToolStripMenuItem();
+            codexBookToolStripMenuItem = new ToolStripMenuItem();
+            regexBookToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             menuStrip1.SuspendLayout();
             SuspendLayout();
@@ -68,7 +70,7 @@
             // 
             // toolStripMenuItem1
             // 
-            toolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { loadDataToolStripMenuItem, calculateViolationsToolStripMenuItem, typesToolStripMenuItem, testToolStripMenuItem, statisticsToolStripMenuItem });
+            toolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { loadDataToolStripMenuItem, calculateViolationsToolStripMenuItem, typesToolStripMenuItem, testToolStripMenuItem, codexBookToolStripMenuItem, regexBookToolStripMenuItem, statisticsToolStripMenuItem });
             toolStripMenuItem1.Name = "toolStripMenuItem1";
             toolStripMenuItem1.Size = new Size(60, 24);
             toolStripMenuItem1.Text = "Menu";
@@ -90,14 +92,14 @@
             // consoleToolStripMenuItem
             // 
             consoleToolStripMenuItem.Name = "consoleToolStripMenuItem";
-            consoleToolStripMenuItem.Size = new Size(194, 26);
+            consoleToolStripMenuItem.Size = new Size(224, 26);
             consoleToolStripMenuItem.Text = "See on Console";
             consoleToolStripMenuItem.Click += consoleToolStripMenuItem_Click;
             // 
             // createPDFToolStripMenuItem
             // 
             createPDFToolStripMenuItem.Name = "createPDFToolStripMenuItem";
-            createPDFToolStripMenuItem.Size = new Size(194, 26);
+            createPDFToolStripMenuItem.Size = new Size(224, 26);
             createPDFToolStripMenuItem.Text = "Create PDF";
             // 
             // typesToolStripMenuItem
@@ -135,7 +137,19 @@
             statisticsToolStripMenuItem.Text = "Statistics";
             statisticsToolStripMenuItem.Click += statisticsToolStripMenuItem_Click;
             // 
-            // Form1
+            // codexBookToolStripMenuItem
+            // 
+            codexBookToolStripMenuItem.Name = "codexBookToolStripMenuItem";
+            codexBookToolStripMenuItem.Size = new Size(223, 26);
+            codexBookToolStripMenuItem.Text = "Codex Book";
+            // 
+            // regexBookToolStripMenuItem
+            // 
+            regexBookToolStripMenuItem.Name = "regexBookToolStripMenuItem";
+            regexBookToolStripMenuItem.Size = new Size(223, 26);
+            regexBookToolStripMenuItem.Text = "Regex Book";
+            // 
+            // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -143,7 +157,7 @@
             Controls.Add(dataGridView1);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
-            Name = "Form1";
+            Name = "MainForm";
             Text = "VarIAble";
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             menuStrip1.ResumeLayout(false);
@@ -167,5 +181,7 @@
         private ToolStripMenuItem exportSettingsToolStripMenuItem;
         private ToolStripMenuItem createPDFToolStripMenuItem;
         private ToolStripMenuItem statisticsToolStripMenuItem;
+        private ToolStripMenuItem codexBookToolStripMenuItem;
+        private ToolStripMenuItem regexBookToolStripMenuItem;
     }
 }

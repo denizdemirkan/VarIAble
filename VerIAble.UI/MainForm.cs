@@ -156,9 +156,8 @@ namespace VerIAble.UI
                 comboBoxColumnList.DisplayMember = "Name";
                 comboBoxColumnList.ValueMember = "Name";
 
-                dataGridView1.Columns.Add(comboBoxColumnList);
-                //dataGridView1.Columns[1].DataPropertyName = "Type";
-                //dataGridView1.Columns.Insert(1, comboBoxColumn);
+                //dataGridView1.Columns.Add(comboBoxColumnList);
+                dataGridView1.Columns.Insert(1, comboBoxColumnList);
 
                 // SameWith Column
                 foreach (Data field in Fields)
@@ -169,10 +168,8 @@ namespace VerIAble.UI
                 sameWithColumn.HeaderText = "SameWith";
                 sameWithColumn.DataSource = fieldNames;
 
-                dataGridView1.Columns.Add(sameWithColumn);
-
-                //dataGridView1.Columns[2].DataPropertyName = "MustSameWith";
-                //dataGridView1.Columns.Insert(2, sameWithColumn);
+                //dataGridView1.Columns.Add(sameWithColumn);
+                dataGridView1.Columns.Insert(2, sameWithColumn);
             }
         }
 
@@ -192,16 +189,13 @@ namespace VerIAble.UI
                         if (selectedCustomType != null)
                         {
                             Data currentField = Fields.ElementAt(e.RowIndex);
-                            //currentField.Type = selectedCustomType;
 
-                            ApplyRulesToField(currentField, selectedCustomType);
+                            FieldCopyHelper.ApplyRulesToField(currentField, selectedCustomType);
                         }
                     }
                 }
-
                 dataGridView1.Invalidate();
                 dataGridView1.Update();
-                
             }
 
             // On SameWith Change
@@ -222,78 +216,6 @@ namespace VerIAble.UI
             }
         }
 
-        private void ApplyRules(Data field, Data data)
-        {
-            data.AllMustLower = field.AllMustLower;
-            data.AllMustUpper = field.AllMustUpper;
-
-            data.AllowSpace = field.AllowSpace;
-            data.AllowNull = field.AllowNull;
-            data.AllowNumerics = field.AllowNumerics;
-            data.AllowSpecialCharacters = field.AllowSpecialCharacters;
-
-            data.MaxLenght = field.MaxLenght;
-            data.MinLenght = field.MinLenght;
-            data.TotalLenght = field.TotalLenght;
-
-            data.MustBeUnique = field.MustBeUnique;
-            data.MustBeDecimal = field.MustBeDecimal;
-            data.MustBeInteger = field.MustBeInteger;
-
-            data.OnlyLetters = field.OnlyLetters;
-            data.OnlyNumerics = field.OnlyNumerics;
-
-            data.MustSameWith = field.MustSameWith;
-
-            data.MustStartsWith = field.MustStartsWith;
-            data.MustEndsWith = field.MustEndsWith;
-            data.MustContains = field.MustContains;
-
-            data.Pattern = field.Pattern;
-
-            data.AllowedValues = field.AllowedValues;
-
-            data.Type = field.Type;
-        }
-
-        // Called After Calcultion
-        private void ApplyRulesToField(Data data, CustomType customType)
-        {
-            data.Type = customType;
-
-            // actually no need for this check. But once application runs with async functions, we may need this.
-            if(data.Type == customType)
-            {
-                data.AllMustLower = data.Type.AllMustLower;
-                data.AllMustUpper = data.Type.AllMustUpper;
-
-                data.AllowSpace = data.Type.AllowSpace;
-                data.AllowNull = data.Type.AllowNull;
-                data.AllowNumerics = data.Type.AllowNumerics;
-                data.AllowSpecialCharacters = data.Type.AllowSpecialCharacters;
-
-                data.MaxLenght = data.Type.MaxLenght;
-                data.MinLenght = data.Type.MinLenght;
-                data.TotalLenght = data.Type.TotalLenght;
-
-                data.MustBeUnique = data.Type.MustBeUnique;
-                data.MustBeDecimal = data.Type.MustBeDecimal;
-                data.MustBeInteger = data.Type.MustBeInteger;
-
-                data.OnlyLetters = data.Type.OnlyLetters;
-                data.OnlyNumerics = data.Type.OnlyNumerics;
-
-                data.MustSameWith = data.Type.MustSameWith;
-
-                data.MustStartsWith = data.Type.MustStartsWith;
-                data.MustEndsWith = data.Type.MustEndsWith;
-                data.MustContains = data.Type.MustContains;
-
-                data.AllowedValues = data.Type.AllowedValues;
-
-                data.Pattern = data.Type.Pattern;
-            }
-        }
 
         private void typesToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -308,116 +230,31 @@ namespace VerIAble.UI
 
             foreach (Data data in CellDatas)
             {
-                ApplyRules(Fields.ElementAt(data.CsvIndex % Fields.Count), data);
-
+                FieldCopyHelper.ApplyRulesToData(Fields.ElementAt(data.CsvIndex % Fields.Count), data);
                 // Data rules Applied
             }
 
-            foreach (Data data in CellDatas)
-            {
-                CustomDataValidator validator = new CustomDataValidator(data, this.Fields, this.CellDatas, this.fieldNames);
-                ValidationResult result = validator.Validate(data);
-                if (!result.IsValid)
-                {
-                    results.Add(result);
-                }
-            }
+            ViolationCalculator.SeeViolationsOnConlose(CellDatas, Fields, fieldNames, results);
 
-            // Loop over all failures
-            foreach (ValidationResult validationResult in results)
-            {
-                foreach (ValidationFailure failure in validationResult.Errors)
-                {
-                    Console.WriteLine(failure.ErrorMessage);
-                }
-            }
             Console.WriteLine("--------------------------------------------------------------------------");
         }
 
         private void exportSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            InputDialog inputDialog = new InputDialog();
-            DialogResult csvFileName = inputDialog.ShowDialog();
-
-            Console.WriteLine(inputDialog.FileName);
-            if (csvFileName == DialogResult.OK)
-            {
-                string settingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-    "Settings");
-
-                string csvContent = ToCsv(CustomTypes);
-
-                File.WriteAllText(Environment.CurrentDirectory + "\\" + inputDialog.FileName + ".csv", csvContent);
-
-                Console.WriteLine("Export File: " + Environment.CurrentDirectory + "\\" + inputDialog.FileName + ".csv");
-            }
-
-
+            ImportExportHelper.ExportCSV(CustomTypes);
         }
         private void importSettingsToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Filter = "CSV file (*.csv)|*.csv";
-                openFileDialog.Title = "Select CSV File";
+            CustomTypes = ImportExportHelper.ImportCSV<CustomType>().ToList();
 
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    string filePath = openFileDialog.FileName;
-                    CustomTypes = ReadCsvToCustomList(filePath);
-
-                    MessageBox.Show("Settings Imported!", "Import Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    Console.WriteLine("Import File: " + filePath);
-
-                    comboBoxColumnList.DataSource = CustomTypes;
-
-                    //dataGridView1.Columns.Clear();
-
-                    //foreach()
-
-                }
-            }
+            comboBoxColumnList.DataSource = CustomTypes;
         }
-
-        // Together
-        static string ToCsv<T>(IEnumerable<T> items)
-        {
-            var properties = typeof(T).GetProperties();
-            var field = string.Join(",", properties.Select(p => p.Name));
-
-            var csvLines = items.Select(item => string.Join(",", properties.Select(p => FormatCsvValue(p.GetValue(item)))));
-
-            return field + Environment.NewLine + string.Join(Environment.NewLine, csvLines);
-        }
-        static string FormatCsvValue(object value)
-        {
-            if (value == null)
-                return "";
-
-            string stringValue = value.ToString();
-            if (stringValue.Contains(',') || stringValue.Contains('"'))
-                return $"\"{stringValue.Replace("\"", "\"\"")}\"";
-            return stringValue;
-        }
-        // Together
-
-        // Make Here Optimization
-        static List<CustomType> ReadCsvToCustomList(string filePath)
-        {
-            using (var reader = new StreamReader(filePath))
-            using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)))
-            {
-                return csv.GetRecords<CustomType>().ToList();
-            }
-        }
-
         private void statisticsToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
 
-        // Saves Changes on CustomTypes to Fields when clicked Save Changes Button in CustomTypeForm
+        // Saves Changes on CustomTypes to Fields when clicked Save Changes Button in CustomTypeForm. Not Implemented yet.
         public void saveChanges()
         {
             foreach (CustomType customType in CustomTypes)

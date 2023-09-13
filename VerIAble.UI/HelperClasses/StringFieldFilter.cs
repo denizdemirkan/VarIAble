@@ -35,7 +35,7 @@ namespace VerIAble.UI.HelperClasses
 
                 foreach (Data field in Fields)
                 {
-                    if (field.Value.Equals(searchedVal)) // FirstName , FirstName
+                    if (field.Value.Equals(searchedVal))
                     {
                         searchedFieldColumn = Fields.IndexOf(field);
                         continue;

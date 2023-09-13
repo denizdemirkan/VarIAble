@@ -1,0 +1,9 @@
+Name,Value,MustSameWith,Description,MustBeUnique,AllowNull,MaxLenght,MinLenght,TotalLenght,OnlyLetters,OnlyNumerics,AllowNumerics,AllowSpecialCharacters,AllowSpace,MustBeInteger,MustBeDecimal,AllMustUpper,AllMustLower,MustStartsWith,MustEndsWith,MustContains,AllowedValues,Codex,CodexThreshold,Pattern
+Integer,,,,False,True,100,0,0,False,True,True,False,False,False,False,False,False,,,,,,0,
+Phone Number,,,,True,True,100,0,10,False,True,True,False,False,True,False,False,False,,,,,,0,
+Name,,,,False,True,100,0,0,True,False,False,False,True,False,False,False,False,,,,,,0,
+String,,,sds,True,True,50,0,0,False,False,True,True,True,False,False,False,False,,,,,,0,
+Email,,,,True,True,100,0,0,False,True,True,True,False,False,False,False,False,,,,,,0,
+UID,,,,True,True,100,0,0,True,False,True,False,False,True,False,False,False,,,,,,0,
+New Custom Type,,,,False,True,100,0,0,False,False,True,True,False,False,False,False,False,,,,,,0,
+New Custom Type,,,,False,True,100,0,0,False,False,True,True,False,False,False,False,False,fs,q,sdd,sd,,0,sds

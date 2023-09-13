@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VerIAble.UI.Classes
 {
-    public class AbstractData
+    public abstract class AbstractData
     {
         public string Value { get; set; }
         public string Description { get; set; }
@@ -36,6 +36,8 @@ namespace VerIAble.UI.Classes
         public string AllowedValues { get; set; }
         public string MustSameWith { get; set; }
 
+        public string Codex { get; set; }
+        public int CodexThreshold { get; set; }
         public string Pattern { get; set; }
     }
 }
